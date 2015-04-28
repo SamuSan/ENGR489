@@ -8,4 +8,5 @@ $(function(){
   inputs.forEach(function(input){
     $('#text-input').append(input);
   });
+  $('#text-input').click();
 })
