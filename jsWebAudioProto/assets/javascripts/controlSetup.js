@@ -1,6 +1,6 @@
 $(function(){
-  $('#playButton').on('click', function(e){
-    console.log("CLICKING LTHIGNS")
-    window.DrumMachine.play();
+  $('#goButton').on('click', function(e){
+    var input = $('#text-input').val();
+    new InputHandler().handleInput($('#text-input').val());
   });
 });
