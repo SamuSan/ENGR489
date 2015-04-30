@@ -1,0 +1,17 @@
+path:
+ Oscillator
+methods-of:Oscillator.wave:
+ play
+ wave:=
+ wave
+public:
+ Oscillator
+ o
+ o:=
+confidential:
+constructors-of:Oscillator:
+ wave
+fresh-methods:
+modules:
+classes:
+ Oscillator
