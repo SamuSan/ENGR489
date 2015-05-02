@@ -1,27 +1,29 @@
 'use strict'
-function Osc (type) {
+function Osc (context, waveform, note) {
   //TODO this is actually waveform, a synth is one or more wavform osc
   var self = this;
-  self.type = type;
+  self.waveform = waveform;
+  self.frequency = MIDIUtils.noteNumberToFrequency(note);
   var oscillator;
 
-  
-//TODO this doesnt extend instrument
-  self.initialise = function(context, frequency) {
-    oscillator = context.createOscillator();
-    oscillator.frequency.value = frequency;
-    oscillator.type = setType();
-    oscillator.connect(context.destination);
-  };
 
   self.play = function(first_argument) {
+    oscillator = context.createOscillator();
+    oscillator.frequency.value = self.frequency;
+    oscillator.type = setWaveform();
+    oscillator.connect(context.destination);
     oscillator.start(0);
   };
 
-  function setType () {
-    switch (self.type){
+  self.shhh = function(first_argument) {
+    oscillator.stop(0);
+  };
+  function setWaveform () {
+    switch (self.waveform){
       case 'sine':
         return oscillator.SINE;
+      case 'square':
+        return oscillator.SQUARE;
       default :
         return oscillator.SINE;
     }
