@@ -3,5 +3,4 @@ function Part(generator, rhythm) {
 
   self.generator = generator;
   self.rhythm    = rhythm;
-  
 }

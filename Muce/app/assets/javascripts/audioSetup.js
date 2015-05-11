@@ -16,12 +16,11 @@ $(function(){
   if (!window.AudioEnvironment.context.createScriptProcessor)
     window.AudioEnvironment.context.createScriptProcessor = context.createJavaScriptNode;
 
-  // window.AudioEnvironment.sequencer = new Sequencer();
-  // window.AudioEnvironment.sequencer.init();
-  for (var i = sampleFiles.length - 1; i >= 0; i--) {
-    console.log(sampleFiles[i]);
-    loadSampleFile(sampleFiles[i]);
-  };
+  function loadSampleFiles() {
+    for (var i = sampleFiles.length - 1; i >= 0; i--) {
+      loadSampleFile(sampleFiles[i]);
+    };
+  }
 
   function loadSampleFile(file) {
     var request = new XMLHttpRequest();
@@ -29,10 +28,13 @@ $(function(){
     request.responseType = "arraybuffer";
     request.onload = function() {
       window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
+          console.log(buffer);
           sampleBuffers.push(buffer);
         });
       };
     request.send();
   }
+
+  loadSampleFiles();
 });
 

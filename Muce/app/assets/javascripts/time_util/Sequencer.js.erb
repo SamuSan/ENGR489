@@ -5,7 +5,7 @@ var Sequencer =  function() {
   var oneMinute = 60.0;
   var eventQueue = [];
   var nextEventTime = 0.0;
-  var currentSubdivision = 64; // TODO this is restrictive, time based is gross, options?
+  var currentSubdivision = 16; // TODO this is restrictive, time based is gross, options?
   var currentStepNumber = 0;
   var performanceRunning = false;
   var schedulingTimeOut = 50;
@@ -35,7 +35,10 @@ var Sequencer =  function() {
   }
 
   function enqueueEvents(part) {
-    eventQueue.push
+    part.rhythm.forEach(function() {
+      part.generator.play()
+    });
+    console.log(part)
   }
 
   function startPerformance(parts) {

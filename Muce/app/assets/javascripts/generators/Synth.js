@@ -7,16 +7,16 @@ var Synth = function (waveform, chord) {
   var oscillators = [];
   var notes = HarmonyUtil.chordFromName(chord);
 
-  self.play = function (){
+  self.play = function (startTime){
     self.createOsc();
     oscillators.forEach(function(osc){
-      osc.play(0);
+      osc.play(startTime);
     });
   }
 
-  self.stop = function () {
+  self.stop = function (endTime) {
     oscillators.forEach(function(osc){
-      osc.shhh(0);
+      osc.shhh(endTime);
     });
   }
 
