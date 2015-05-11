@@ -1,8 +1,7 @@
 $(function(){
   var inputs  = [
-    "var s := Synth.name(\"Synth1\") mono(true) waveform(\"sine\")\n",
-    "s.play\n",
-    "var d := Synth.name(\"Synth1\") mono(false) waveform(\"sine\")\n",
+    "def s = Synth.type(\"sine\") chord(\"C-Maj7\")\n",
+    "for(1..4) do { s.play }\n"
     ]
 
   inputs.forEach(function(input){

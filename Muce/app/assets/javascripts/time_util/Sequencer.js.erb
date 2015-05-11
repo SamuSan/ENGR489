@@ -1,0 +1,75 @@
+var Sequencer =  function() {
+  var self = this;
+
+  var tempo = 120.0;
+  var oneMinute = 60.0;
+  var eventQueue = [];
+  var nextEventTime = 0.0;
+  var currentSubdivision = 64; // TODO this is restrictive, time based is gross, options?
+  var currentStepNumber = 0;
+  var performanceRunning = false;
+  var schedulingTimeOut = 50;
+  var scheduleEventHorizon = 0.1;
+  var sequencerWorker = null;
+  var context = window.AudioEnvironment.context;
+
+  function advanceStep() {
+    var subdivisionTimeValue = (oneMinute / tempo) / currentSubdivision;
+    nextEventTime += subdivisionTimeValue;
+
+    currentStepNumber ++;
+    if(currentStepNumber == 64) {
+      currentStepNumber = 0;
+    }
+  }
+
+  function scheduleEvents( beatNumber, time ) {
+
+  }
+
+  function eventScheduler() {
+      while (nextEventTime < context.currentTime + scheduleEventHorizon ) {
+          scheduleEvents( current16thNote, nextNoteTime );
+          advanceStep();
+      }
+  }
+
+  function enqueueEvents(part) {
+    eventQueue.push
+  }
+
+  function startPerformance(parts) {
+    parts.forEach(function(part) {
+      enqueueEvents(part);
+    });
+  }
+
+  function stopPerformance() {
+    postMessage('stop')
+  }
+
+  self.run = function(parts) {
+    performanceRunning =! performanceRunning;
+    console.log(parts);
+    performanceRunning ? startPerformance(parts) : stopPerformance();
+  }
+
+  self.updateTempo = function(newTempo) {
+    tempo = newTempo;
+  }
+
+  self.init = function(){
+    console.log("Initialising sequencer");
+    sequencerWorker = new Worker("<%= javascript_path "sequencerWorker.js" %>");
+
+    sequencerWorker.onmessage = function(e) {
+      if(e.data == 'step') {
+        enqueueEvents();
+      }
+      else {
+        console.log('Received :' + e.data);
+      }
+    }
+    sequencerWorker.postMessage({ "schedulingTimeOut": schedulingTimeOut });
+  }
+}

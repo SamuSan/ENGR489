@@ -8,9 +8,7 @@ var Synth = function (waveform, chord) {
   var notes = HarmonyUtil.chordFromName(chord);
 
   self.play = function (){
-    notes.forEach(function(note){
-      oscillators.push(new Osc(self.getContext(), oscWaveform, note))
-    });
+    self.createOsc();
     oscillators.forEach(function(osc){
       osc.play(0);
     });
@@ -19,6 +17,12 @@ var Synth = function (waveform, chord) {
   self.stop = function () {
     oscillators.forEach(function(osc){
       osc.shhh(0);
+    });
+  }
+
+  Synth.prototype.createOsc = function() {
+    notes.forEach(function(note){
+      oscillators.push(new Osc(self.getContext(), oscWaveform, note))
     });
   }
 }

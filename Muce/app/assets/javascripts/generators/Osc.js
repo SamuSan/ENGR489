@@ -6,7 +6,7 @@ function Osc (context, waveform, note) {
   var oscillator;
 
 
-  self.play = function(first_argument) {
+  self.play = function() {
     oscillator = createOscillator();
     oscillator.start(0);
   };
