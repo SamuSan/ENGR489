@@ -6,8 +6,8 @@ function Test() {
 
   self.startTest = function() {
     var parts = []
-    var s = new TestSynth('s','sine', 'C-Maj7');
-    parts.push(new Part(s, rhy.QU))
+    var s = new Synth('s','sine', 'C-Maj7');
+    parts.push(new Part(s, rhy.SQU))
     seq.run(parts);
   }
 }

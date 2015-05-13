@@ -1,24 +1,26 @@
 var self = this;
 var timeOutID = null;
-var schedulingTimeOut = 50;
+var schedulingLookAhead = 100.0;
 
 self.onmessage = function(e) {
 
   if(e.data == 'running') {
-    timeOutID = setInterval(postMessage('step'), schedulingTimeOut);
+    console.log("And we are off")
+    timeOutID = setInterval(postMessage('step'), schedulingLookAhead);
   }
-  else if(e.data.schedulingTimeOut) {
-    schedulingTimeOut = e.data.schedulingTimeOut;
+  else if(e.data.schedulingLookAhead) {
+    schedulingLookAhead = e.data.schedulingLookAhead;
 
-    console.log("SchedulingTimeOut set to :" + schedulingTimeOut);
+    console.log("SchedulingLookAhead set to :" + schedulingLookAhead);
 
     //if timeOutID then we are already running and this is changing timeout value
     if(timeOutID) {
       clearInterval(timeOutID);
-      timeOutID = setInterval(postMessage('step'), schedulingTimeOut);
+      timeOutID = setInterval(postMessage('step'), schedulingLookAhead);
     }
   }
   else if(e.data == 'stop') {
+    console.log('stopping')
     clearInterval(timeOutID);
     timeOutID = null;
   }

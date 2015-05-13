@@ -1,59 +1,71 @@
 var Sequencer =  function() {
   var self = this;
 
-  var tempo = 120.0;
+var startedrunning = 0; // TODO for testing remove me
+  var tempo = 60.0;
   var oneMinute = 60.0;
   var eventQueue = [];
   var nextEventTime = 0.0;
-  var currentSubdivision = 16; // TODO this is restrictive, time based is gross, options?
+  var currentSubdivision = 4;  // TODO 16ths eg 4 subs per beat this is restrictive, time based is gross, options?
   var currentStepNumber = 0;
   var performanceRunning = false;
-  var schedulingTimeOut = 50;
+  var oneBeatTimeValue = (oneMinute / tempo) ;
+  var schedulingLookAhead = 50.0;
   var scheduleEventHorizon = 0.1;
   var sequencerWorker = null;
   var context = window.AudioEnvironment.context;
 
   function advanceStep() {
-    var subdivisionTimeValue = (oneMinute / tempo) / currentSubdivision;
-    nextEventTime += subdivisionTimeValue;
-
+    oneBeatTimeValue = (oneMinute / tempo);
+    nextEventTime += (1.0 / currentSubdivision) * oneBeatTimeValue;
+    db("Next Event Time:  " + nextEventTime );
     currentStepNumber ++;
-    if(currentStepNumber == 64) {
+    if(currentStepNumber == 16) {
       currentStepNumber = 0;
     }
   }
 
-  function scheduleEvents( beatNumber, time ) {
-
+  function scheduleEvent( stepNumber, time ) {
+    self.parts.forEach(function(part) {
+      part.rhythm.forEach(function(rhythm) {
+        if(rhythm){
+          db("schdeuling")
+          var startTime = nextEventTime;
+          var endTime   = nextEventTime + (rhythm * oneBeatTimeValue);
+          part.generator.play(startTime, endTime);
+        }
+      });
+    });
   }
 
   function eventScheduler() {
-      while (nextEventTime < context.currentTime + scheduleEventHorizon ) {
-          scheduleEvents( current16thNote, nextNoteTime );
-          advanceStep();
-      }
-  }
-
-  function enqueueEvents(part) {
-    part.rhythm.forEach(function() {
-      part.generator.play()
-    });
-    console.log(part)
+    db("Lookahead limit"+context.currentTime + scheduleEventHorizon );
+    while (nextEventTime < context.currentTime + scheduleEventHorizon ) {
+      scheduleEvent( currentStepNumber, nextEventTime );
+      advanceStep();
+      var runningTime = context.currentTime - startedrunning;
+      db("Runngint for " + runningTime + "at " + currentStepNumber);
+      // if(context.currentTime - startedrunning > 10.0){ stopPerformance();}
+    }
   }
 
   function startPerformance(parts) {
-    parts.forEach(function(part) {
-      enqueueEvents(part);
-    });
+    startedrunning = context.currentTime;
+    self.parts = parts; 
+    currentStepNumber = 0;
+
+    nextEventTime = context.currentTime;
+    sequencerWorker.postMessage('running');
   }
 
   function stopPerformance() {
-    postMessage('stop')
+    db("stopping");
+    sequencerWorker.postMessage('stop');
   }
 
   self.run = function(parts) {
-    performanceRunning =! performanceRunning;
-    console.log(parts);
+    db("Running");
+    performanceRunning = !performanceRunning;
     performanceRunning ? startPerformance(parts) : stopPerformance();
   }
 
@@ -61,18 +73,23 @@ var Sequencer =  function() {
     tempo = newTempo;
   }
 
-  self.init = function(){
-    console.log("Initialising sequencer");
+  self.init = function() {
+    db("Initialising sequencer");
     sequencerWorker = new Worker("<%= javascript_path "sequencerWorker.js" %>");
 
     sequencerWorker.onmessage = function(e) {
       if(e.data == 'step') {
-        enqueueEvents();
+        db("step");
+        eventScheduler();
       }
       else {
-        console.log('Received :' + e.data);
+        db('Received :' + e.data);
       }
-    }
-    sequencerWorker.postMessage({ "schedulingTimeOut": schedulingTimeOut });
+    };
+    sequencerWorker.postMessage({ "schedulingLookAhead": schedulingLookAhead });
+  }
+
+  function db(message) {
+    console.log(message);
   }
 }

@@ -6,16 +6,16 @@ function Osc (context, waveform, note) {
   var oscillator;
 
 
-  self.play = function() {
+  self.play = function(startTime) {
     oscillator = createOscillator();
-    oscillator.start(0);
+    oscillator.start(startTime);
   };
 
-  self.shhh = function(first_argument) {
-    oscillator.stop(0);
+  self.shhh = function(endTime) {
+    oscillator.stop(endTime);
   };
 
-  function createOscillator(){
+  function createOscillator() {
     var oscillator = context.createOscillator();
     oscillator.frequency.value = self.frequency;
     oscillator.type = self.waveform;
