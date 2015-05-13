@@ -1,243 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// The core module of the library, exposing an interpreter that takes Grace code
-// and executes it. It also exposes the constructor for the underlying
-// Interpreter object, which allows for the preservation of state between
-// multiple executions.
-
-"use strict";
-
-var Task, interpreter, loader, parser, rt, util;
-
-parser = require("./parser");
-Task = require("./task");
-util = require("./util");
-
-function parseAndHandle(text, path) {
-  return parser.parse(text).then(null, function (error) {
-    if (error instanceof parser.ParseError) {
-      return rt.ParseFailure.raise(rt.string(error.message))
-        .then(null, function (packet) {
-          packet.object.stackTrace = [
-            rt.trace(null, null, {
-              "module": path,
-              "line": error.line,
-              "column": error.column
-            })
-          ];
-
-          throw packet;
-        });
-    }
-
-    return rt.InternalError.raiseFromPrimitiveError(error);
-  });
-}
-
-function CheckResult(isSuccess, name, result, line, column) {
-  this.isSuccess = isSuccess;
-  this.name = name;
-
-  if (isSuccess) {
-    this.value = result;
-  } else {
-    this.message = result;
-    this.line = line;
-    this.column = column;
-  }
-}
-
-CheckResult.prototype.toString = function () {
-  return this.name + (this.message ? ": " + this.message : "");
-};
-
-// new Interpreter(preludeGen : Task<Object> | Object = <sys>,
-//     moduleLoader : Function<Interpreter, Path, Callback<Object>> = <fs>)
-//   A new interpreter, with internal state preserved between executions. The
-//   prelude generator may either be a task to build the prelude object, or just
-//   the object itself.
-function Interpreter(preludeGen, moduleLoader) {
-  var self = this;
-
-  if (moduleLoader === undefined && typeof preludeGen === "function") {
-    moduleLoader = preludeGen;
-    preludeGen = rt.prelude;
-  }
-
-  this.prelude = Task.resolve(preludeGen || rt.prelude);
-  moduleLoader = moduleLoader || loader.defaultLoader;
-
-  self.prelude.then(function (prelude) {
-    self.interpreter = new interpreter.Interpreter(prelude,
-      function (path, callback) {
-        moduleLoader.apply(null, [ self, path, callback ]);
-      });
-  });
-}
-
-function makeInterpret(method, optionalPath, parse, onSuccess, onFailure) {
-  return function (path, code, callback) {
-    var self = this;
-
-    if (optionalPath && typeof code !== "string") {
-      callback = code;
-      code = path;
-      path = null;
-    }
-
-    function next(ast) {
-      return self.prelude.then(function () {
-        delete self.interpreter.modulePath;
-
-        if (path !== null) {
-          self.interpreter.modulePath = path;
-        }
-
-        return self.interpreter[method](ast, path);
-      });
-    }
-
-    return (util.isArray(code) ? next(code) : parse(code, path).then(next))
-      .then(onSuccess || null, onFailure || null).callback(callback).stopify();
-  };
-}
-
-// interpret(path : Path = undefined,
-//     code : String, callback : Callback<Object>) -> Function<Boolean>
-//   Interpret Grace code with the existing state of this interpreter, returning
-//   the result of the final expression. Takes an optional module path that will
-//   be used to report problems. Returns a function that will attempt to stop
-//   the execution when called.
-Interpreter.prototype.interpret =
-  makeInterpret("interpret", true, parseAndHandle);
-
-// check(path : Path = undefined,
-//     code : String, callback : Callback<StaticError>) -> Function<Boolean>
-//   Parse and check the given code, returning an object with information about
-//   the problem if the code fails to parse or fails its check. Takes an
-//   optional module path that will be used to report problems. Returns a
-//   function that will attempt to stop the execution when called.
-Interpreter.prototype.check =
-  makeInterpret("check", true, parser.parse, function (result) {
-    if (util.isArray(result)) {
-      return new CheckResult(true, "Success", result);
-    }
-
-    return result.message().then(function (message) {
-      return message.asPrimitiveString();
-    }).then(function (message) {
-      var location, node;
-
-      node = result.object.node;
-      location = node && node.location;
-
-      return new CheckResult(false, "Checker Failure",
-        message, location && location.line, location && location.column);
-    });
-  }, function (packet) {
-    if (packet instanceof parser.ParseError) {
-      return new CheckResult(false, "Parse Failure",
-        packet.message, packet.line, packet.column);
-    }
-
-    throw packet;
-  });
-
-// module(path : Path, code : String,
-//     callback : Callback<Object>) -> Function<Boolean>
-//   Interpret Grace code as a module body and cache it based on the given path
-//   so a request for the same module does not occur again. Returns a function
-//   that will attempt to stop the execution when called.
-Interpreter.prototype.module =
-  makeInterpret("module", false, parseAndHandle);
-
-// load(path : Path, callback : Callback<Object>) -> Function<Boolean>
-//   Run the interpreter module loader on the given path. Returns a function
-//   that will attempt to stop the execution when called.
-Interpreter.prototype.load = function (path, callback) {
-  var self = this;
-
-  return self.prelude.then(function () {
-    return self.interpreter.load(path);
-  }).callback(callback).stopify();
-};
-
-// enter(Callback<Object> = null)
-//   Enter into an object scope and stay in that state, passing the newly
-//   created self value to the given callback. This is useful for implementing
-//   an interactive mode.
-Interpreter.prototype.enter = function (callback) {
-  var self = this;
-
-  self.prelude.then(function () {
-    return self.interpreter.enter();
-  }).callback(callback);
-};
-
-function buildAndApply(method, args) {
-  var built, len, required;
-
-  function Build() {
-    Interpreter.apply(this, util.slice(args, required, len));
-  }
-
-  Build.prototype = Interpreter.prototype;
-
-  required = typeof args[1] === "string" || util.isArray(args[1]) ? 2 : 1;
-
-  len = args.length - 1;
-  built = new Build();
-  return built[method].apply(built,
-    util.slice(args, 0, required).concat([ args[len] ]));
-}
-
-exports.Interpreter = Interpreter;
-
-// interpret(path : Path = undefined, code : String, prelude : Object = <sys>,
-//     moduleLoader : Function<Interpreter, Path, Callback<Object>> = <fs>,
-//     callback : Callback<Object>)
-//   Interpret Grace code standalone.
-exports.interpret = function () {
-  return buildAndApply("interpret", arguments);
-};
-
-// check(path : Path = undefined, code : String, prelude : Object = <sys>,
-//     moduleLoader : Function<Interpreter, Path, Callback<Object>> = <fs>,
-//     callback : Callback<Object>)
-//   Check Grace code standalone.
-exports.check = function () {
-  return buildAndApply("check", arguments);
-};
-
-// module(path : Path, code : String, prelude : Object = <sys>,
-//     moduleLoader : Function<Interpreter, Path, Callback<Object>> = <fs>,
-//     callback : Callback<Object>)
-//   Interpret Grace code standalone as a module body and cache it based on the
-//   given path so a request for the same module does not occur again.
-exports.module = function () {
-  return buildAndApply("module", arguments);
-};
-
-// load(path : Path, prelude : Object = <sys>,
-//     moduleLoader : Function<Interpreter, Path, Callback<Object>> = <fs>,
-//     callback : Callback<Object>)
-//   Run a new interpreter with a module loader on the given path.
-exports.load = function () {
-  return buildAndApply("load", arguments);
-};
-
-rt = require("./runtime");
-interpreter = require("./interpreter");
-
-loader = require("./loader");
-
-exports.Task = Task;
-exports.runtime = rt;
-exports.defaultLoader = loader.defaultLoader;
-exports.prelude = rt.prelude;
-
-util.extend(exports, parser);
-
-},{"./interpreter":4,"./loader":5,"./parser":6,"./runtime":10,"./task":19,"./util":21}],2:[function(require,module,exports){
 // The abstract syntax tree of Grace. Consists primarily of constructors.
 
 "use strict";
@@ -1068,7 +829,7 @@ exports.Self = Self;
 exports.Super = Super;
 exports.Outer = Outer;
 
-},{"./task":19,"./util":21}],3:[function(require,module,exports){
+},{"./task":19,"./util":21}],2:[function(require,module,exports){
 // Defines a base visitor class for building AST visitors in Grace.
 
 "use strict";
@@ -1126,7 +887,246 @@ makeConstructor("empty", EmptyVisitor);
 
 module.exports = visitor;
 
-},{"../ast":2,"../runtime":10,"../runtime/definitions":11,"../runtime/primitives":16,"../util":21}],4:[function(require,module,exports){
+},{"../ast":1,"../runtime":10,"../runtime/definitions":11,"../runtime/primitives":16,"../util":21}],3:[function(require,module,exports){
+// The core module of the library, exposing an interpreter that takes Grace code
+// and executes it. It also exposes the constructor for the underlying
+// Interpreter object, which allows for the preservation of state between
+// multiple executions.
+
+"use strict";
+
+var Task, interpreter, loader, parser, rt, util;
+
+parser = require("./parser");
+Task = require("./task");
+util = require("./util");
+
+function parseAndHandle(text, path) {
+  return parser.parse(text).then(null, function (error) {
+    if (error instanceof parser.ParseError) {
+      return rt.ParseFailure.raise(rt.string(error.message))
+        .then(null, function (packet) {
+          packet.object.stackTrace = [
+            rt.trace(null, null, {
+              "module": path,
+              "line": error.line,
+              "column": error.column
+            })
+          ];
+
+          throw packet;
+        });
+    }
+
+    return rt.InternalError.raiseFromPrimitiveError(error);
+  });
+}
+
+function CheckResult(isSuccess, name, result, line, column) {
+  this.isSuccess = isSuccess;
+  this.name = name;
+
+  if (isSuccess) {
+    this.value = result;
+  } else {
+    this.message = result;
+    this.line = line;
+    this.column = column;
+  }
+}
+
+CheckResult.prototype.toString = function () {
+  return this.name + (this.message ? ": " + this.message : "");
+};
+
+// new Interpreter(preludeGen : Task<Object> | Object = <sys>,
+//     moduleLoader : Function<Interpreter, Path, Callback<Object>> = <fs>)
+//   A new interpreter, with internal state preserved between executions. The
+//   prelude generator may either be a task to build the prelude object, or just
+//   the object itself.
+function Interpreter(preludeGen, moduleLoader) {
+  var self = this;
+
+  if (moduleLoader === undefined && typeof preludeGen === "function") {
+    moduleLoader = preludeGen;
+    preludeGen = rt.prelude;
+  }
+
+  this.prelude = Task.resolve(preludeGen || rt.prelude);
+  moduleLoader = moduleLoader || loader.defaultLoader;
+
+  self.prelude.then(function (prelude) {
+    self.interpreter = new interpreter.Interpreter(prelude,
+      function (path, callback) {
+        moduleLoader.apply(null, [ self, path, callback ]);
+      });
+  });
+}
+
+function makeInterpret(method, optionalPath, parse, onSuccess, onFailure) {
+  return function (path, code, callback) {
+    var self = this;
+
+    if (optionalPath && typeof code !== "string") {
+      callback = code;
+      code = path;
+      path = null;
+    }
+
+    function next(ast) {
+      return self.prelude.then(function () {
+        delete self.interpreter.modulePath;
+
+        if (path !== null) {
+          self.interpreter.modulePath = path;
+        }
+
+        return self.interpreter[method](ast, path);
+      });
+    }
+
+    return (util.isArray(code) ? next(code) : parse(code, path).then(next))
+      .then(onSuccess || null, onFailure || null).callback(callback).stopify();
+  };
+}
+
+// interpret(path : Path = undefined,
+//     code : String, callback : Callback<Object>) -> Function<Boolean>
+//   Interpret Grace code with the existing state of this interpreter, returning
+//   the result of the final expression. Takes an optional module path that will
+//   be used to report problems. Returns a function that will attempt to stop
+//   the execution when called.
+Interpreter.prototype.interpret =
+  makeInterpret("interpret", true, parseAndHandle);
+
+// check(path : Path = undefined,
+//     code : String, callback : Callback<StaticError>) -> Function<Boolean>
+//   Parse and check the given code, returning an object with information about
+//   the problem if the code fails to parse or fails its check. Takes an
+//   optional module path that will be used to report problems. Returns a
+//   function that will attempt to stop the execution when called.
+Interpreter.prototype.check =
+  makeInterpret("check", true, parser.parse, function (result) {
+    if (util.isArray(result)) {
+      return new CheckResult(true, "Success", result);
+    }
+
+    return result.message().then(function (message) {
+      return message.asPrimitiveString();
+    }).then(function (message) {
+      var location, node;
+
+      node = result.object.node;
+      location = node && node.location;
+
+      return new CheckResult(false, "Checker Failure",
+        message, location && location.line, location && location.column);
+    });
+  }, function (packet) {
+    if (packet instanceof parser.ParseError) {
+      return new CheckResult(false, "Parse Failure",
+        packet.message, packet.line, packet.column);
+    }
+
+    throw packet;
+  });
+
+// module(path : Path, code : String,
+//     callback : Callback<Object>) -> Function<Boolean>
+//   Interpret Grace code as a module body and cache it based on the given path
+//   so a request for the same module does not occur again. Returns a function
+//   that will attempt to stop the execution when called.
+Interpreter.prototype.module =
+  makeInterpret("module", false, parseAndHandle);
+
+// load(path : Path, callback : Callback<Object>) -> Function<Boolean>
+//   Run the interpreter module loader on the given path. Returns a function
+//   that will attempt to stop the execution when called.
+Interpreter.prototype.load = function (path, callback) {
+  var self = this;
+
+  return self.prelude.then(function () {
+    return self.interpreter.load(path);
+  }).callback(callback).stopify();
+};
+
+// enter(Callback<Object> = null)
+//   Enter into an object scope and stay in that state, passing the newly
+//   created self value to the given callback. This is useful for implementing
+//   an interactive mode.
+Interpreter.prototype.enter = function (callback) {
+  var self = this;
+
+  self.prelude.then(function () {
+    return self.interpreter.enter();
+  }).callback(callback);
+};
+
+function buildAndApply(method, args) {
+  var built, len, required;
+
+  function Build() {
+    Interpreter.apply(this, util.slice(args, required, len));
+  }
+
+  Build.prototype = Interpreter.prototype;
+
+  required = typeof args[1] === "string" || util.isArray(args[1]) ? 2 : 1;
+
+  len = args.length - 1;
+  built = new Build();
+  return built[method].apply(built,
+    util.slice(args, 0, required).concat([ args[len] ]));
+}
+
+exports.Interpreter = Interpreter;
+
+// interpret(path : Path = undefined, code : String, prelude : Object = <sys>,
+//     moduleLoader : Function<Interpreter, Path, Callback<Object>> = <fs>,
+//     callback : Callback<Object>)
+//   Interpret Grace code standalone.
+exports.interpret = function () {
+  return buildAndApply("interpret", arguments);
+};
+
+// check(path : Path = undefined, code : String, prelude : Object = <sys>,
+//     moduleLoader : Function<Interpreter, Path, Callback<Object>> = <fs>,
+//     callback : Callback<Object>)
+//   Check Grace code standalone.
+exports.check = function () {
+  return buildAndApply("check", arguments);
+};
+
+// module(path : Path, code : String, prelude : Object = <sys>,
+//     moduleLoader : Function<Interpreter, Path, Callback<Object>> = <fs>,
+//     callback : Callback<Object>)
+//   Interpret Grace code standalone as a module body and cache it based on the
+//   given path so a request for the same module does not occur again.
+exports.module = function () {
+  return buildAndApply("module", arguments);
+};
+
+// load(path : Path, prelude : Object = <sys>,
+//     moduleLoader : Function<Interpreter, Path, Callback<Object>> = <fs>,
+//     callback : Callback<Object>)
+//   Run a new interpreter with a module loader on the given path.
+exports.load = function () {
+  return buildAndApply("load", arguments);
+};
+
+rt = require("./runtime");
+interpreter = require("./interpreter");
+
+loader = require("./loader");
+
+exports.Task = Task;
+exports.runtime = rt;
+exports.defaultLoader = loader.defaultLoader;
+exports.prelude = rt.prelude;
+
+util.extend(exports, parser);
+
+},{"./interpreter":4,"./loader":5,"./parser":6,"./runtime":10,"./task":19,"./util":21}],4:[function(require,module,exports){
 (function (global){
 // The Grace interpreter. Exposes both the Interpreter constructor and the
 // helper function 'interpret' which executes on an anonymous Interpreter.
@@ -2565,7 +2565,7 @@ Interpreter.prototype.reportNode = function (packet, node) {
 exports.Interpreter = Interpreter;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ast":2,"./runtime":10,"./task":19,"./util":21,"path":26}],5:[function(require,module,exports){
+},{"./ast":1,"./runtime":10,"./task":19,"./util":21,"path":26}],5:[function(require,module,exports){
 (function (process){
 // Handles locating and loading imported Grace modules in Node.js. Browsers
 // should override the loading mechanism when using the external interpreter
@@ -2575,15 +2575,15 @@ exports.Interpreter = Interpreter;
 
 var Task, fs, path, readFile, rt;
 
+
 path = require("path");
 
 Task = require("./task");
 rt = require("./runtime");
 
-
-readFile = Task.taskify(fs.readFile);
-
 function loadGrace(interpreter, name) {
+  readFile = readFile || Task.taskify(fs.readFile);
+
   return readFile(name + ".grace").then(function (code) {
     code = code.toString();
 
@@ -3881,7 +3881,7 @@ exports.parse = parse;
 exports.ParseError = error.ParseError;
 exports.isSymbol = lexer.isSymbol;
 
-},{"./ast":2,"./parser/error":7,"./parser/lexer":8,"./parser/tokens":9,"./task":19,"./util":21}],7:[function(require,module,exports){
+},{"./ast":1,"./parser/error":7,"./parser/lexer":8,"./parser/tokens":9,"./task":19,"./util":21}],7:[function(require,module,exports){
 // The ParseError definition and the 'raise' helper, which are used by both the
 // lexer and the parser.
 
@@ -6717,7 +6717,7 @@ module.exports = new Task(function (resolve, reject) {
 });
 
 }).call(this,require('_process'))
-},{"../hopper":undefined,"../runtime":10,"../task":19,"../util":21,"./definitions":11,"./exceptions":12,"./methods":13,"./mirrors":14,"./publicity":17,"./types":18,"_process":27}],16:[function(require,module,exports){
+},{"../hopper":3,"../runtime":10,"../task":19,"../util":21,"./definitions":11,"./exceptions":12,"./methods":13,"./mirrors":14,"./publicity":17,"./types":18,"_process":27}],16:[function(require,module,exports){
 // Primitive Grace definitions in JavaScript.
 
 "use strict";
@@ -9358,7 +9358,7 @@ Node.visitor = rt.method("visitor", 0, function () {
 
 exports.Node = Node;
 
-},{"../ast":2,"../ast/visitor":3,"../runtime":10,"../util":21,"./definitions":11}],19:[function(require,module,exports){
+},{"../ast":1,"../ast/visitor":2,"../runtime":10,"../util":21,"./definitions":11}],19:[function(require,module,exports){
 // A Promise-like implementation of asynchronous tasks. Tasks are compatible
 // with Promise's 'thenable' definition, but are not compliant with the Promises
 // specification.
@@ -11521,4 +11521,8 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":28,"_process":27,"inherits":25}]},{},[1]);
+},{"./support/isBuffer":28,"_process":27,"inherits":25}],30:[function(require,module,exports){
+(function (global){
+global.hopper = require(".")
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{".":3}]},{},[30]);
