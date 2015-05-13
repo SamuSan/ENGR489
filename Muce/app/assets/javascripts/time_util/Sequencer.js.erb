@@ -2,7 +2,7 @@ var Sequencer =  function() {
   var self = this;
 
 var startedrunning = 0; // TODO for testing remove me
-  var tempo = 60.0;
+  var tempo = 120.0;
   var oneMinute = 60.0;
   var eventQueue = [];
   var nextEventTime = 0.0;
@@ -17,6 +17,7 @@ var startedrunning = 0; // TODO for testing remove me
 
   function advanceStep() {
     oneBeatTimeValue = (oneMinute / tempo);
+    console.log((1.0 / currentSubdivision));
     nextEventTime += (1.0 / currentSubdivision) * oneBeatTimeValue;
     db("Next Event Time:  " + nextEventTime );
     currentStepNumber ++;
@@ -28,7 +29,7 @@ var startedrunning = 0; // TODO for testing remove me
   function scheduleEvent( stepNumber, time ) {
     self.parts.forEach(function(part) {
       part.rhythm.forEach(function(rhythm) {
-        if(rhythm){
+        if(rhythm == 1){
           db("schdeuling")
           var startTime = nextEventTime;
           var endTime   = nextEventTime + (rhythm * oneBeatTimeValue);
@@ -39,7 +40,7 @@ var startedrunning = 0; // TODO for testing remove me
   }
 
   function eventScheduler() {
-    db("Lookahead limit"+context.currentTime + scheduleEventHorizon );
+    db("Lookahead limit"+ (context.currentTime + scheduleEventHorizon) );
     while (nextEventTime < context.currentTime + scheduleEventHorizon ) {
       scheduleEvent( currentStepNumber, nextEventTime );
       advanceStep();
@@ -63,6 +64,10 @@ var startedrunning = 0; // TODO for testing remove me
     sequencerWorker.postMessage('stop');
   }
 
+  self.stop = function() {
+   sequencerWorker.postMessage('stop'); 
+  }
+
   self.run = function(parts) {
     db("Running");
     performanceRunning = !performanceRunning;
@@ -79,7 +84,7 @@ var startedrunning = 0; // TODO for testing remove me
 
     sequencerWorker.onmessage = function(e) {
       if(e.data == 'step') {
-        db("step");
+        db(e.data);
         eventScheduler();
       }
       else {
