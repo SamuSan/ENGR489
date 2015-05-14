@@ -28,7 +28,7 @@ $(function(){
     request.responseType = "arraybuffer";
     request.onload = function() {
       window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
-          console.log(buffer);
+          // console.log(buffer);
           sampleBuffers.push(buffer);
         });
       };

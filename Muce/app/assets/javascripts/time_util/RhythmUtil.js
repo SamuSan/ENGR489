@@ -7,5 +7,5 @@ function RhythmUtil() {
 
   self.CR   = [1,0,0,0]
   self.QU   = [1,0,1,0];
-  self.SQU  = [1,1,1,1];
+  self.SQ  = [1,1,1,1];
 }

@@ -7,6 +7,7 @@ function Test() {
   self.startTest = function() {
     var parts = []
     var s = new Synth('s','sine', 'C-Maj7');
+    var d = new DrumMachine('d');
     parts.push(new Part(s, rhy.CR))
     seq.run(parts);
   }

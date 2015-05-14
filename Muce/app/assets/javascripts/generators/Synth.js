@@ -28,6 +28,10 @@ var Synth = function(name, waveform, chordShape) {
     notes = HarmonyUtil.invertChord(notes);
   }
 
+  self.name = function() {
+    return name;
+  }
+  
   Synth.prototype.createOsc = function() {
     oscillators = [];
     notes.forEach(function(note){

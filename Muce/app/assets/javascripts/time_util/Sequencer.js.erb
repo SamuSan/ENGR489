@@ -2,9 +2,9 @@ var Sequencer =  function() {
   var self = this;
 
 var startedrunning = 0; // TODO for testing remove me
-  var tempo = 120.0;
+  var tempo = 60.0;
   var oneMinute = 60.0;
-  var eventQueue = [];
+  var eventsQueued = [];
   var nextEventTime = 0.0;
   var currentSubdivision = 4;  // TODO 16ths eg 4 subs per beat this is restrictive, time based is gross, options?
   var currentStepNumber = 0;
@@ -17,9 +17,8 @@ var startedrunning = 0; // TODO for testing remove me
 
   function advanceStep() {
     oneBeatTimeValue = (oneMinute / tempo);
-    console.log((1.0 / currentSubdivision));
     nextEventTime += (1.0 / currentSubdivision) * oneBeatTimeValue;
-    db("Next Event Time:  " + nextEventTime );
+
     currentStepNumber ++;
     if(currentStepNumber == 16) {
       currentStepNumber = 0;
@@ -27,26 +26,29 @@ var startedrunning = 0; // TODO for testing remove me
   }
 
   function scheduleEvent( stepNumber, time ) {
+    console.log(stepNumber % 4);
+    //TODO this is fucked youre scheduing all four parts every tick you cunt
+    //FIX THAT SHIT
     self.parts.forEach(function(part) {
-      part.rhythm.forEach(function(rhythm) {
-        if(rhythm == 1){
-          db("schdeuling")
-          var startTime = nextEventTime;
-          var endTime   = nextEventTime + (rhythm * oneBeatTimeValue);
+      var startTime = nextEventTime;
+      // db(part.generator.name() + "" + startTime.toFixed(5))
+      // db(!eventsQueued[part.generator.name() + "" + startTime.toFixed(5)]);
+      if(!eventsQueued[part.generator.name() + "" + startTime.toFixed(5)]){
+        db("SCHEDULING Next Event Time:  " + nextEventTime.toFixed(5) );
+        var endTime = nextEventTime + (oneBeatTimeValue / currentSubdivision);
+        eventsQueued.push(part.generator.name() + "" + startTime.toFixed(5));
+        if (part.rhythm[stepNumber % 4] == 1) {
           part.generator.play(startTime, endTime);
-        }
-      });
+        };
+      }
     });
   }
 
   function eventScheduler() {
-    db("Lookahead limit"+ (context.currentTime + scheduleEventHorizon) );
     while (nextEventTime < context.currentTime + scheduleEventHorizon ) {
       scheduleEvent( currentStepNumber, nextEventTime );
       advanceStep();
       var runningTime = context.currentTime - startedrunning;
-      db("Runngint for " + runningTime + "at " + currentStepNumber);
-      // if(context.currentTime - startedrunning > 10.0){ stopPerformance();}
     }
   }
 
@@ -84,7 +86,7 @@ var startedrunning = 0; // TODO for testing remove me
 
     sequencerWorker.onmessage = function(e) {
       if(e.data == 'step') {
-        db(e.data);
+        // db(e.data);
         eventScheduler();
       }
       else {
@@ -95,6 +97,6 @@ var startedrunning = 0; // TODO for testing remove me
   }
 
   function db(message) {
-    console.log(message);
+    // console.log(message);
   }
 }
