@@ -1,9 +1,9 @@
 'use strict';
 
 var Synth = function(name, waveform, chordShape) {
-
-  Instrument.apply(this, arguments);
   var self = this;
+  Instrument.apply(self, arguments);
+
   var name = name;
   var oscWaveform = waveform;
   var oscillators = [];

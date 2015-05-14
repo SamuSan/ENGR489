@@ -8,4 +8,8 @@ function RhythmUtil() {
   self.CR   = [1,0,0,0]
   self.QU   = [1,0,1,0];
   self.SQ  = [1,1,1,1];
+
+  self.ROCK_BEAT_ONE = {  "hats"  : QU,
+                          "snare" : CR,
+                          "kick"  : CR }
 }
