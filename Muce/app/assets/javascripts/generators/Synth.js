@@ -2,9 +2,9 @@
 
 var Synth = function(name, waveform, chordShape) {
   var self = this;
-  Instrument.apply(self, arguments);
+  Instrument.apply(self, [name]);
 
-  var name = name;
+  // var name = name;
   var oscWaveform = waveform;
   var oscillators = [];
   var chord = chordShape;
@@ -28,10 +28,6 @@ var Synth = function(name, waveform, chordShape) {
     notes = HarmonyUtil.invertChord(notes);
   }
 
-  self.name = function() {
-    return name;
-  }
-  
   Synth.prototype.createOsc = function() {
     oscillators = [];
     notes.forEach(function(note){

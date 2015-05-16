@@ -20,9 +20,9 @@ $(function(){
 
   window.AudioEnvironment.sampleBuffers = {};
 
-  function loadSampleFiles() {
-    for (var i = sampleFiles.length - 1; i >= 0; i--) {
-      loadSampleFile(sampleFiles[i]);
+  window.AudioEnvironment.loadSampleFiles = function(filenameArray) {
+    for (var i = filenameArray.length - 1; i >= 0; i--) {
+      loadSampleFile(filenameArray[i]);
     };
   }
 
@@ -45,6 +45,6 @@ $(function(){
   function stripFileName(file){
     return filename = file.split('/')[2].split('.')[0];
   }
-  loadSampleFiles();
+    window.AudioEnvironment.loadSampleFiles(sampleFiles);
 });
 

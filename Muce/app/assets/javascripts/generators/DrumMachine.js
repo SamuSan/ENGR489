@@ -1,6 +1,6 @@
 function DrumMachine(name, beat) {
   var self = this;
-  Instrument.apply(self, arguments);
+  Instrument.apply(self, [name]);
 
   var hat   = window.AudioEnvironment.sampleBuffers['hat'];
   var snare = window.AudioEnvironment.sampleBuffers['snare'];
