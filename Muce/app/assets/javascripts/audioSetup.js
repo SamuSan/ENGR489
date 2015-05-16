@@ -1,14 +1,12 @@
 $(function(){
   var baseDir       = '../assets/'
-  var sampleFiles   = [ baseDir + "kick.wav",
-                        baseDir + "snare.wav",
-                        baseDir + "hat.wav"];
-
+  var sampleFiles   = [ window.FileUtils.fileLocation("kick.wav"),
+                        window.FileUtils.fileLocation("snare.wav"),
+                        window.FileUtils.fileLocation("hat.wav")];
 
   console.log("Loading Audio Envirinomet")
   window.AudioEnvironment = function(){};
   window.AudioEnvironment.context = new (window.AudioContext || window.webkitAudioContext)();
-
 
   if (!window.AudioEnvironment.context.createGain)
     window.AudioEnvironment.context.createGain = context.createGainNode;
@@ -16,7 +14,6 @@ $(function(){
     window.AudioEnvironment.context.createDelay = context.createDelayNode;
   if (!window.AudioEnvironment.context.createScriptProcessor)
     window.AudioEnvironment.context.createScriptProcessor = context.createJavaScriptNode;
-
 
   window.AudioEnvironment.sampleBuffers = {};
 

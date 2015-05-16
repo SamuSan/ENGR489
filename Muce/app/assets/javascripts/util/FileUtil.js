@@ -1,4 +1,8 @@
 window.FileUtils = new function () {
   var self = this;
-  self.sampleDirPref = '../assets/';
+  var sampleDir = '../assets/';
+
+  self.fileLocation = function(filename) {
+    return sampleDir + filename;
+  }
 };

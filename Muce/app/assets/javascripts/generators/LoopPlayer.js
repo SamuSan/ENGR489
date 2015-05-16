@@ -1,5 +1,6 @@
 function LoopPlayer(name, filename) {
   Instrument.apply(this, [name]);
-  var filePath = window.FileUtils.sampleDirPref;
-  var sample = window.AudioEnvironment.loadSampleFiles([filePath + filename]);
+
+  var sample = window.AudioEnvironment.loadSampleFiles(
+              [window.FileUtils.fileLocation(filename)]);
 }
