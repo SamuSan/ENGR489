@@ -1,5 +1,4 @@
 $(function(){
-  var baseDir       = '../assets/'
   var sampleFiles   = [ window.FileUtils.fileLocation("kick.wav"),
                         window.FileUtils.fileLocation("snare.wav"),
                         window.FileUtils.fileLocation("hat.wav")];
@@ -17,23 +16,21 @@ $(function(){
 
   window.AudioEnvironment.sampleBuffers = {};
 
-  window.AudioEnvironment.loadSampleFiles = function(filenameArray) {
-    for (var i = filenameArray.length - 1; i >= 0; i--) {
-      loadSampleFile(filenameArray[i]);
+  function setUpDrumMachineSamples() { 
+    for (var i = sampleFiles.length - 1; i >= 0; i--) {
+      window.AudioEnvironment.sampleBuffers[stripFileName(sampleFiles[i])] = 
+      window.AudioEnvironment.loadSampleFile(sampleFiles[i]);
     };
   }
 
-  function loadSampleFile(file) {
+  window.AudioEnvironment.loadSampleFile = function(file) {
     var request = new XMLHttpRequest();
     request.open("GET", file, true);
     request.responseType = "arraybuffer";
 
     request.onload = function() {
       window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
-          console.log(buffer);
-          console.log(stripFileName(file));
-          var sampleName = stripFileName(file);
-          window.AudioEnvironment.sampleBuffers[sampleName] = buffer;
+          return buffer;
         });
       };
     request.send();
@@ -42,6 +39,5 @@ $(function(){
   function stripFileName(file){
     return filename = file.split('/')[2].split('.')[0];
   }
-    window.AudioEnvironment.loadSampleFiles(sampleFiles);
+ setUpDrumMachineSamples();
 });
-
