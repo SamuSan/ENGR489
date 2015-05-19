@@ -13,10 +13,12 @@ function LoopPlayer(name, filename) {
     return sampleBuffer.duration();
   }
 
-  self.syncWithTempo = function(tempo) {
+  self.syncWithTempo = function() {
     var clock = window.AudioEnvironment.Clock;
-    console.log(duration() / clock.beat());
-
+    var numberOfBeats = duration() / clock.beat();
+    console.log("NOB" + numberOfBeats);
+    console.log(16 / numberOfBeats);
+    updatePlayRate(16 / numberOfBeats);
   }
 
   self.play = function()  {
@@ -34,9 +36,17 @@ function LoopPlayer(name, filename) {
     }
   }
 
+  //Private
+  function updatePlayRate(rate) {
+    console.log("updating playbackrate" + rate);
+    self.sampleBuffer.playbackRate.value = rate;
+    console.log(self.sampleBuffer.playbackRate.value);
+  }
+
   function duration() {
     return self.sampleBuffer.buffer.duration;
   }
+
   function loadSampleFile(file) {
     var request = new XMLHttpRequest();
     request.open("GET", file, true);
