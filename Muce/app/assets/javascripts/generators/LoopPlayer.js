@@ -3,20 +3,32 @@ function LoopPlayer(name, filename) {
   Instrument.apply(this, [name]);
 
   var file              = window.FileUtils.fileLocation(filename);
-  var bufferSourceNode  = self.getContext().createBufferSource();
-  // var sampleBuffer      = window.AudioEnvironment.loadSampleFile(file, bufferSourceNode);
-  var sampleBuffer      = window.AudioEnvironment.sampleBuffers['hat'];
-
-
+  var sampleBuffer      = null;
+  loadSampleFile(file);
 
   self.sampleLength = function() {
     return sampleBuffer.duration();
   }
 
   self.play = function()  {
-    console.log(sampleBuffer)
-    if(sampleBuffer){
-      sampleBuffer.start();
+    while(!loaded){
+      console.log('waiting for load');
     }
+    conole.log('playing');
+    sampleBuffer.start();
+  }
+
+  loadSampleFile = function(file) {
+    var request = new XMLHttpRequest();
+    request.open("GET", file, true);
+    request.responseType = "arraybuffer";
+
+    request.onload = function() {
+      window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
+          sampleBuffer = buffer;
+          console.log('loaded');
+        });
+      };
+    request.send();
   }
 }

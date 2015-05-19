@@ -3,7 +3,7 @@ $(function(){
                         window.FileUtils.fileLocation("snare.wav"),
                         window.FileUtils.fileLocation("hat.wav")];
 
-  console.log("Loading Audio Environment")
+  console.log("Loading Audio Envirinomet")
   window.AudioEnvironment = function(){};
   window.AudioEnvironment.context = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -16,34 +16,26 @@ $(function(){
 
   window.AudioEnvironment.sampleBuffers = {};
 
-  function setUpDrumMachineSamples() {
+  function setUpDrumMachineSamples() { 
     for (var i = sampleFiles.length - 1; i >= 0; i--) {
-      var sourceBufferNode  = window.AudioEnvironment.context.createBufferSource();
-      window.AudioEnvironment.sampleBuffers[stripFileName(sampleFiles[i])] =
-      window.AudioEnvironment.loadSampleFile(sampleFiles[i], sourceBufferNode);
+      window.AudioEnvironment.sampleBuffers[stripFileName(sampleFiles[i])] = 
+      window.AudioEnvironment.loadSampleFile(sampleFiles[i]);
     };
   }
 
-  window.AudioEnvironment.loadSampleFile = function(file, sourceBufferNode) {
-    var promise = new Promise(function(resolve, reject){
+  window.AudioEnvironment.loadSampleFile = function(file) {
     var request = new XMLHttpRequest();
-      request.open("GET", file, true);
-      request.responseType = "arraybuffer";
-      request.send();
-      request.onload = function() {
-        resolve(this.response);
-        // window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
-        //     // console.log("returning");
-        //     // console.log( buffer);
-        //     // sourceBufferNode.buffer = buffer;
-        //     // sourceBufferNode.connect(window.AudioEnvironment.context.destination);
-        //     // console.log(sourceBufferNode);
-        //     resolve(buffer);
-        //   });
-        };
-    });
-    return promise;
-  } 
+    request.open("GET", file, true);
+    request.responseType = "arraybuffer";
+
+    request.onload = function() {
+      window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
+          window.AudioEnvironment.sampleBuffers[stripFileName(file)] = buffer;
+          console.log(window.AudioEnvironment.sampleBuffers);
+        });
+      };
+    request.send();
+  }
 
   function stripFileName(file){
     return filename = file.split('/')[2].split('.')[0];
