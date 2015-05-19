@@ -30,7 +30,9 @@ $(function(){
 
     request.onload = function() {
       window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
-          window.AudioEnvironment.sampleBuffers[stripFileName(file)] = buffer;
+          var sampleBuffer    = window.AudioEnvironment.context.createBufferSource();
+          sampleBuffer.buffer = buffer;
+          window.AudioEnvironment.sampleBuffers[stripFileName(file)] = sampleBuffer;
           console.log(window.AudioEnvironment.sampleBuffers);
         });
       };
