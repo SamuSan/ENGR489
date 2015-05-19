@@ -2,8 +2,9 @@ function LoopPlayer(name, filename) {
   var self = this;
   Instrument.apply(this, [name]);
 
-  var file              = window.FileUtils.fileLocation(filename);
-  var sampleBuffer      = null;
+  var loaded       = false;
+  var file         = window.FileUtils.fileLocation(filename);
+  self.sampleBuffer = null;
   loadSampleFile(file);
 
   self.sampleLength = function() {
@@ -14,18 +15,24 @@ function LoopPlayer(name, filename) {
     while(!loaded){
       console.log('waiting for load');
     }
-    conole.log('playing');
-    sampleBuffer.start();
+    console.log('playing');
+    self.sampleBuffer.start();
   }
 
-  loadSampleFile = function(file) {
+  self.stop = function() {
+    self.sampleBuffer.stop();
+  }
+
+  function loadSampleFile(file) {
     var request = new XMLHttpRequest();
     request.open("GET", file, true);
     request.responseType = "arraybuffer";
 
     request.onload = function() {
       window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
-          sampleBuffer = buffer;
+          self.sampleBuffer = self.getContext().createBufferSource();
+          self.sampleBuffer.buffer = buffer;
+          loaded = true;
           console.log('loaded');
         });
       };
