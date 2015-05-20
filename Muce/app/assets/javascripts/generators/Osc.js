@@ -6,10 +6,12 @@ function Osc (context, waveform, note) {
   self.frequency  = MIDIUtils.noteNumberToFrequency(note);
   var oscillator  = null;
   var gain        = null;
-  var gainVal     = 0.3;
+  var env         = null;
+  var GAIN_VALUE  = 0.3;
 
   self.play = function(startTime) {
     oscillator = createOscillator();
+    env.trigger();
     oscillator.start(startTime);
   };
 
@@ -35,8 +37,11 @@ function Osc (context, waveform, note) {
 
   function routeNodes() {
     gain = context.createGain();
-    gain.value = gainVal;
+    env = new Envelope(GAIN_VALUE, context);
+
+    gain.value = GAIN_VALUE;
     self.connect(gain);
+    env.connect(gain.gain);
     gain.connect(context.destination);
   }
 }

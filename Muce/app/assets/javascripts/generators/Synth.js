@@ -6,7 +6,6 @@ var Synth = function(name, waveform, chordShape) {
 
   var oscWaveform = waveform;
   var oscillators = [];
-  var gains       = [];
   var chord       = chordShape;
   var notes       = HarmonyUtil.chordFromName(chord);
 
