@@ -1,5 +1,5 @@
 $(function () {
-    window.AudioEnvironment.Clock = function(){}
+    window.AudioEnvironment.Clock = function(){};
     var self = window.AudioEnvironment.Clock;
     var context = window.AudioEnvironment.context;
     var tempo = 120; // Classic default
@@ -25,5 +25,4 @@ $(function () {
     self.tempo = function() {
       return tempo;
     }
-  
 });

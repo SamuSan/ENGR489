@@ -4,11 +4,11 @@ var Synth = function(name, waveform, chordShape) {
   var self = this;
   Instrument.apply(self, [name]);
 
-  // var name = name;
   var oscWaveform = waveform;
   var oscillators = [];
-  var chord = chordShape;
-  var notes = HarmonyUtil.chordFromName(chord);
+  var gains       = [];
+  var chord       = chordShape;
+  var notes       = HarmonyUtil.chordFromName(chord);
 
   self.play = function(startTime, endTime) { //TODO reconsider this naming, couldbe called schedule gets called by play
     self.createOsc();

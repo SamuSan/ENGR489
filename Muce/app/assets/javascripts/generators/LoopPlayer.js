@@ -19,9 +19,11 @@ function LoopPlayer(name, filename) {
     console.log("NOB" + numberOfBeats);
     console.log(16 / numberOfBeats);
     updatePlayRate(16 / numberOfBeats);
+    numberOfBeats = duration() / clock.beat();
+    console.log(duration() * self.sampleBuffer.playbackRate.value);
   }
 
-  self.play = function()  {
+  self.play = function() {
     if(loaded){
       playing = !playing;
       assignBuffer();
@@ -64,7 +66,7 @@ function LoopPlayer(name, filename) {
     request.send();
   }
 
-  function assignBuffer() { 
+  function assignBuffer() {
     self.sampleBuffer = self.getContext().createBufferSource();
     self.sampleBuffer.buffer = audioBuffer;
     self.sampleBuffer.connect(self.getContext().destination);

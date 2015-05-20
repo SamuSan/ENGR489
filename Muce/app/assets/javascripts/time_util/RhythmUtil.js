@@ -9,7 +9,7 @@ function RhythmUtil() {
   self.QU   = [1,0,1,0];
   self.SQ  = [1,1,1,1];
 
-  self.ROCK_BEAT_ONE = {  "hats"  : QU,
-                          "snare" : CR,
-                          "kick"  : CR }
+  self.ROCK_BEAT_ONE = {  "hats"  : self.QU,
+                          "snare" : self.CR,
+                          "kick"  : self.CR }
 }

@@ -5,7 +5,10 @@ $(function(){
 
   console.log("Loading Audio Envirinomet")
   window.AudioEnvironment = function(){};
-  window.AudioEnvironment.context = new (window.AudioContext || window.webkitAudioContext)();
+  window.AudioEnvironment.context = new window.AudioContext();
+  if(!window.AudioEnvironment.context){
+    window.AudioEnvironment.context = new window.webkitAudioContext();
+  }
 
   if (!window.AudioEnvironment.context.createGain)
     window.AudioEnvironment.context.createGain = context.createGainNode;
