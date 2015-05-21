@@ -7,6 +7,7 @@ function Osc (context, waveform, note) {
   var oscillator  = null;
   var gain        = null;
   var env         = null;
+  var pan         = null;
   var GAIN_VALUE  = 0.3;
 
   self.play = function(startTime) {
@@ -23,6 +24,10 @@ function Osc (context, waveform, note) {
     oscillator.connect(node);
   }
 
+  self.setADSR = function(settings) {
+    env.set(settings);
+  }
+
   function createOscillator() {
     initOscillator();
     routeNodes();
@@ -37,7 +42,8 @@ function Osc (context, waveform, note) {
 
   function routeNodes() {
     gain = context.createGain();
-    env = new Envelope(GAIN_VALUE, context);
+    env  = new Envelope(GAIN_VALUE, context);
+    pan  = context.createStereoPanner();
 
     gain.value = GAIN_VALUE;
     self.connect(gain);

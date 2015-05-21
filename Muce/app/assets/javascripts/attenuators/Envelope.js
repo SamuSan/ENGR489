@@ -19,4 +19,15 @@ var Envelope = function(amplitude, context) {
     parma.linearRampToValueAtTime(0, now + self.sustainTime + self.releaseTime);
   }
 
+  self.set = function (settings) { // TODO ask are optionals and hash args ok in Grace
+    if(settings['attack']){
+      self.attackTime = settings['attack'];
+    }
+    if(settings['sustain']){
+      self.sustainTime = settings['sustain'];
+    }
+    if(settings['release']){
+      self.releaseTime = settings['release'];
+    }
+  }
 }

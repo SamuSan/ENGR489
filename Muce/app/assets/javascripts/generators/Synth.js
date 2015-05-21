@@ -27,6 +27,12 @@ var Synth = function(name, waveform, chordShape) {
     notes = HarmonyUtil.invertChord(notes);
   }
 
+  self.setADSR = function(settings) {
+    oscillators.forEach(function(osc) {
+      osc.setADSR(settings); //TODO this aint gonna work the ENV gets killed everytine with the OSC
+    })
+  }
+
   Synth.prototype.createOsc = function() {
     oscillators = [];
     notes.forEach(function(note){
