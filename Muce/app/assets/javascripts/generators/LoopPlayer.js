@@ -1,6 +1,6 @@
 function LoopPlayer(name, filename) {
   var self = this;
-  Instrument.apply(this, [name]);
+  Instrument.apply(self, [name]);
 
   var loaded        = false;
   var playing       = false;
@@ -66,7 +66,7 @@ function LoopPlayer(name, filename) {
     request.send();
   }
 
-  function assignBuffer() {
+  function assignBuffer() { // TODO kill me
     self.sampleBuffer = self.getContext().createBufferSource();
     self.sampleBuffer.buffer = audioBuffer;
     self.sampleBuffer.connect(self.getContext().destination);

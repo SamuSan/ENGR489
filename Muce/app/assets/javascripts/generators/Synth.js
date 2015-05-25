@@ -6,12 +6,16 @@ var Synth = function(name, waveform, chordShape) {
 
   var oscWaveform = waveform;
   var oscillators = [];
+  var gains       = [];
+  var envelopes   = [];
   var chord       = chordShape;
   var notes       = HarmonyUtil.chordFromName(chord);
+
 
   self.play = function(startTime, endTime) { //TODO reconsider this naming, couldbe called schedule gets called by play
     self.createOsc();
     oscillators.forEach(function(osc) {
+      env.trigger();
       osc.play(startTime);
       osc.shhh(endTime);
     });
@@ -38,5 +42,15 @@ var Synth = function(name, waveform, chordShape) {
     notes.forEach(function(note){
       oscillators.push(new Osc(self.getContext(), oscWaveform, note))
     });
+  }
+
+  function routeNodes() {
+    gain = context.createGain();
+    env  = new Envelope(GAIN_VALUE, context);
+
+    gain.value = GAIN_VALUE;
+    self.connect(gain);
+    env.connect(gain.gain);
+    gain.connect(context.destination);
   }
 }
