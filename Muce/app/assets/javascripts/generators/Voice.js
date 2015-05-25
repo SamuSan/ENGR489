@@ -6,11 +6,12 @@ function Voice(note, waveform) {
   var waveform    = waveform;
   var GAIN_VALUE  = 0.3;
 
-  var osc  = new Osc(context, oscWaveform, note);
+  var osc  = new Osc(context, waveform, note);
   var gain = context.createGain();
   var env  = new Envelope(GAIN_VALUE, context);
 
   self.trigger = function(startTime, endTime) {
+    console.log('playing a thing')
       createOsc();
       env.trigger();
       osc.play(startTime, endTime);
@@ -21,8 +22,8 @@ function Voice(note, waveform) {
   }
 
   function createOsc() {
-    osc = new Osc(context, oscWaveform, note);
-    routeNodes();
+    osc = new Osc(context, waveform, note);
+    // routeNodes(osc);
   }
 
   function routeNodes(osc) {
