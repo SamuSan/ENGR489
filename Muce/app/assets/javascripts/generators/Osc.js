@@ -5,12 +5,13 @@ function Osc (context, waveform, note) {
   self.waveform   = waveform;
   self.frequency  = MIDIUtils.noteNumberToFrequency(note);
   var oscillator  = null;
-  var GAIN_VALUE  = 0.3;
 
-  self.play = function(startTime) {
+
+  self.play = function(startTime, endTime) {
     oscillator = createOscillator();
     env.trigger();
     oscillator.start(startTime);
+    oscillator.stop(endTime);
   };
 
   self.shhh = function(endTime) {
@@ -21,13 +22,11 @@ function Osc (context, waveform, note) {
     oscillator.connect(node);
   }
 
-  self.setADSR = function(settings) {
-    env.set(settings);
-  }
+
 
   function createOscillator() {
     initOscillator();
-    routeNodes();
+
     return oscillator;
   }
 

@@ -15,6 +15,39 @@ var startedrunning = 0; // TODO for testing remove me
   var sequencerWorker = null;
   var context = window.AudioEnvironment.context;
 
+
+
+  self.stop = function() {
+   sequencerWorker.postMessage('stop');
+  }
+
+  self.run = function(parts) {
+    db("Running");
+    performanceRunning = !performanceRunning;
+    performanceRunning ? startPerformance(parts) : stopPerformance();
+  }
+
+  self.updateTempo = function(newTempo) {
+    tempo = newTempo;
+  }
+
+  self.init = function() {
+    db("Initialising sequencer");
+    sequencerWorker = new Worker("<%= javascript_path "sequencerWorker.js" %>");
+
+    sequencerWorker.onmessage = function(e) {
+      if(e.data == 'step') {
+        eventScheduler();
+      }
+      else {
+        db('Received :' + e.data);
+      }
+    };
+    sequencerWorker.postMessage({ "schedulingLookAhead": schedulingLookAhead });
+  }
+
+  //Private
+
   function advanceStep() {
     oneBeatTimeValue = (oneMinute / tempo);
     nextEventTime += (1.0 / currentSubdivision) * oneBeatTimeValue;
@@ -26,13 +59,8 @@ var startedrunning = 0; // TODO for testing remove me
   }
 
   function scheduleEvent( stepNumber, time ) {
-    console.log(stepNumber % 4);
-    //TODO this is fucked youre scheduing all four parts every tick you cunt
-    //FIX THAT SHIT
     self.parts.forEach(function(part) {
       var startTime = nextEventTime;
-      // db(part.generator.name() + "" + startTime.toFixed(5))
-      // db(!eventsQueued[part.generator.name() + "" + startTime.toFixed(5)]);
       if(!eventsQueued[part.generator.name() + "" + startTime.toFixed(5)]){
         db("SCHEDULING Next Event Time:  " + nextEventTime.toFixed(5) );
         var endTime = nextEventTime + (oneBeatTimeValue / currentSubdivision);
@@ -54,7 +82,7 @@ var startedrunning = 0; // TODO for testing remove me
 
   function startPerformance(parts) {
     startedrunning = context.currentTime;
-    self.parts = parts; 
+    self.parts = parts;
     currentStepNumber = 0;
 
     nextEventTime = context.currentTime;
@@ -66,37 +94,7 @@ var startedrunning = 0; // TODO for testing remove me
     sequencerWorker.postMessage('stop');
   }
 
-  self.stop = function() {
-   sequencerWorker.postMessage('stop'); 
-  }
-
-  self.run = function(parts) {
-    db("Running");
-    performanceRunning = !performanceRunning;
-    performanceRunning ? startPerformance(parts) : stopPerformance();
-  }
-
-  self.updateTempo = function(newTempo) {
-    tempo = newTempo;
-  }
-
-  self.init = function() {
-    db("Initialising sequencer");
-    sequencerWorker = new Worker("<%= javascript_path "sequencerWorker.js" %>");
-
-    sequencerWorker.onmessage = function(e) {
-      if(e.data == 'step') {
-        // db(e.data);
-        eventScheduler();
-      }
-      else {
-        db('Received :' + e.data);
-      }
-    };
-    sequencerWorker.postMessage({ "schedulingLookAhead": schedulingLookAhead });
-  }
-
   function db(message) {
-    // console.log(message);
+    console.log(message);
   }
 }

@@ -5,22 +5,18 @@ var Synth = function(name, waveform, chordShape) {
   Instrument.apply(self, [name]);
 
   var oscWaveform = waveform;
-  var oscillators = [];
-  var gains       = [];
-  var envelopes   = [];
+  var voices      = [];
   var chord       = chordShape;
   var notes       = HarmonyUtil.chordFromName(chord);
-
+  init();
 
   self.play = function(startTime, endTime) { //TODO reconsider this naming, couldbe called schedule gets called by play
-    self.createOsc();
-    oscillators.forEach(function(osc) {
-      env.trigger();
-      osc.play(startTime);
-      osc.shhh(endTime);
+    voices.forEach(function(voice) {
+      voice.trigger(startTime, endTime);
     });
   }
 
+  //TODO I dont think we need this now
   self.stop = function(endTime) {
     oscillators.forEach(function(osc) {
       osc.shhh(endTime);
@@ -32,25 +28,23 @@ var Synth = function(name, waveform, chordShape) {
   }
 
   self.setADSR = function(settings) {
-    oscillators.forEach(function(osc) {
-      osc.setADSR(settings); //TODO this aint gonna work the ENV gets killed everytine with the OSC
+    voices.forEach(function(voice) {
+      voice.setADSR(settings); //TODO this aint gonna work the ENV gets killed everytine with the OSC
     })
   }
 
-  Synth.prototype.createOsc = function() {
-    oscillators = [];
+  function init() {
     notes.forEach(function(note){
-      oscillators.push(new Osc(self.getContext(), oscWaveform, note))
+      voices.push(new Voice(note, oscWaveform));
     });
   }
 
-  function routeNodes() {
-    gain = context.createGain();
-    env  = new Envelope(GAIN_VALUE, context);
-
-    gain.value = GAIN_VALUE;
-    self.connect(gain);
-    env.connect(gain.gain);
-    gain.connect(context.destination);
+  function createOsc() {
+    oscillators = [];
+    notes.forEach(function(note){
+      var osc = new Osc(self.getContext(), oscWaveform, note);
+      routeNodes(osc);
+      oscillators.push(new Osc(self.getContext(), oscWaveform, note));
+    });
   }
 }
