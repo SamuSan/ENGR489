@@ -14,6 +14,7 @@ function LoopPlayer(name, filename) {
   }
 
   self.syncWithTempo = function() {
+    while(!loaded){console.log('waiting')};
     var clock = window.AudioEnvironment.Clock;
     var numberOfBeats = duration() / clock.beat();
     console.log("NOB" + numberOfBeats);
@@ -25,6 +26,9 @@ function LoopPlayer(name, filename) {
 
   self.play = function() {
     if(loaded){
+      if(playing){
+        self.stop();
+      }
       playing = !playing;
       assignBuffer();
       self.sampleBuffer.start();
@@ -35,6 +39,7 @@ function LoopPlayer(name, filename) {
   self.stop = function() {
     if(playing){
       self.sampleBuffer.stop();
+      playing = !playing;
     }
   }
 

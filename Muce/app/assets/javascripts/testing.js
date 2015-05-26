@@ -11,10 +11,13 @@ function Test() {
     var f = new Synth('f','sine', 'A-Min7');
 
     var d = new DrumMachine('d');
+    var l = new LoopPlayer('l', 'testes_loop_1.wav');
+    // l.syncWithTempo();
     // parts.push(new Part(s, rhy.CR));
     // parts.push(new Part(e, rhy.SQ));
     // parts.push(new Part(f, rhy.QU));
     parts.push(new Part(d, rhy.ROCK_BEAT_ONE));
+    parts.push(new Part(l, rhy.ONE_BAR_LOOP));
     parts = new Arranger(parts).arrange();
     seq.run(parts);
   }

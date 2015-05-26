@@ -11,7 +11,9 @@ function RhythmUtil() {
 
   self.SQ   = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
 
-  self.ROCK_BEAT_ONE = {  "hat"  : self.SQ,
+  self.ONE_BAR_LOOP = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+  self.ROCK_BEAT_ONE = {  "hat"  : self.QU,
                           "snare" : [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
                           "kick"  : [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1] }
 }
