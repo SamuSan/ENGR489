@@ -16,12 +16,12 @@ var Synth = function(name, waveform, chordShape) {
     });
   }
 
-  //TODO I dont think we need this now
-  self.stop = function(endTime) {
-    oscillators.forEach(function(osc) {
-      osc.shhh(endTime);
-    });
-  }
+  // //TODO I dont think we need this now
+  // self.stop = function(endTime) {
+  //   oscillators.forEach(function(osc) {
+  //     osc.shhh(endTime);
+  //   });
+  // }
 
   self.invertChord = function() {
     notes = HarmonyUtil.invertChord(notes);

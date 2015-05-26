@@ -13,7 +13,7 @@ function Voice(note, waveform) {
   self.trigger = function(startTime, endTime) {
     console.log('playing a thing')
       createOsc();
-      env.trigger();
+      // env.trigger();
       osc.play(startTime, endTime);
   }
 
@@ -23,13 +23,13 @@ function Voice(note, waveform) {
 
   function createOsc() {
     osc = new Osc(context, waveform, note);
-    // routeNodes(osc);
+    routeNodes(osc);
   }
 
   function routeNodes(osc) {
     gain.value = GAIN_VALUE;
     osc.connect(gain);
-    env.connect(gain.gain);
+    // env.connect(gain.gain);
     gain.connect(context.destination);
   }
 }

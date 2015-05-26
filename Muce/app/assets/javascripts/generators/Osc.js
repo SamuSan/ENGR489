@@ -4,11 +4,11 @@ function Osc (context, waveform, note) {
   var self = this;
   self.waveform   = waveform;
   self.frequency  = MIDIUtils.noteNumberToFrequency(note);
-  var oscillator  = createOscillator();
-
+  var oscillator  = null;
+  createOscillator();
 
   self.play = function(startTime, endTime) {
-    oscillator = createOscillator();
+    createOscillator();
     oscillator.start(startTime);
     oscillator.stop(endTime);
   }
@@ -22,9 +22,8 @@ function Osc (context, waveform, note) {
   }
 
   function createOscillator() {
-    var oscillator = context.createOscillator();
+    oscillator = context.createOscillator();
     oscillator.frequency.value = self.frequency;
     oscillator.type = self.waveform;
-    return oscillator;
   }
 }

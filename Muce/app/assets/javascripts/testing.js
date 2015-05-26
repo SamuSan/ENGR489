@@ -9,7 +9,7 @@ function Test() {
     var s = new Synth('s','sine', 'C-Maj7');
     var d = new DrumMachine('d');
     parts.push(new Part(s, rhy.CR));
-    parts.push(new Part(d, rhy.ROCK_BEAT_ONE));
+    // parts.push(new Part(d, rhy.ROCK_BEAT_ONE));
     parts = new Arranger(parts).arrange();
     seq.run(parts);
   }
