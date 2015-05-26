@@ -15,7 +15,7 @@ var Synth = function(name, waveform, chordShape) {
   self.play = function(startTime, endTime) { //TODO reconsider this naming, couldbe called schedule gets called by play
     self.createOsc();
     oscillators.forEach(function(osc) {
-      env.trigger();
+      // env.trigger();
       osc.play(startTime);
       osc.shhh(endTime);
     });

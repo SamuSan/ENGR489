@@ -8,8 +8,8 @@ function Osc (context, waveform, note) {
   var GAIN_VALUE  = 0.3;
 
   self.play = function(startTime) {
-    oscillator = createOscillator();
-    env.trigger();
+    createOscillator();
+    // env.trigger();
     oscillator.start(startTime);
   };
 
@@ -20,20 +20,21 @@ function Osc (context, waveform, note) {
   self.connect = function(node) {
     oscillator.connect(node);
   }
-
+ 
   self.setADSR = function(settings) {
     env.set(settings);
   }
 
   function createOscillator() {
     initOscillator();
-    routeNodes();
-    return oscillator;
+    // routeNodes();
+    // return oscillator;
   }
 
   function initOscillator() {
     oscillator = context.createOscillator();
     oscillator.frequency.value = self.frequency;
     oscillator.type = self.waveform;
+    oscillator.connect(context.destination);
   }
 }
