@@ -8,7 +8,7 @@ function Osc (context, waveform, note) {
   var gain        = null;
   var env         = null;
   var pan         = null;
-  var GAIN_VALUE  = 0.3;
+  var GAIN_VALUE  = 0.2;
 
   self.play = function(startTime) {
     oscillator = createOscillator();
