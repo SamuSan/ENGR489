@@ -20,7 +20,7 @@ function DrumMachine(name) {
   }
     //TODO add a drum
   self.addDrum = function() {
-    console.log('not yet impleneted');
+    console.log('not yet implemented');
   }
 
   //Private

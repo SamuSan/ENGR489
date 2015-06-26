@@ -16,7 +16,7 @@ function Osc (context, waveform, note) {
     oscillator.start(startTime);
   };
 
-  self.shhh = function(endTime) {
+  self.stop = function(endTime) {
     oscillator.stop(endTime);
   };
 

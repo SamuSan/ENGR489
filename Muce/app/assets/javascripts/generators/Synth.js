@@ -19,7 +19,7 @@ var Synth = function(name, waveform, chordShape) {
 
   self.stop = function(endTime) {
     oscillators.forEach(function(osc) {
-      osc.shhh(endTime);
+      osc.stop(endTime);
     });
   }
 
