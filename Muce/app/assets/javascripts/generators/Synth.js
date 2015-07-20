@@ -10,10 +10,11 @@ var Synth = function(name, waveform, chordShape) {
   var notes       = HarmonyUtil.chordFromName(chord);
 
   self.play = function(startTime, endTime) { //TODO reconsider this naming, couldbe called schedule gets called by play
-    self.createOsc();
+    console.log("PLaying")
+    createOsc();
     oscillators.forEach(function(osc) {
       osc.play(startTime);
-      osc.shhh(endTime);
+      osc.stop(endTime);
     });
   }
 
@@ -33,8 +34,8 @@ var Synth = function(name, waveform, chordShape) {
     })
   }
 
-  Synth.prototype.createOsc = function() {
-    oscillators = [];
+  function createOsc() {
+    oscillators.length = 0;
     notes.forEach(function(note){
       oscillators.push(new Osc(self.getContext(), oscWaveform, note))
     });

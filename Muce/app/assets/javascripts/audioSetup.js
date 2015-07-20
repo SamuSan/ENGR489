@@ -36,7 +36,6 @@ $(function(){
           var sampleBuffer    = window.AudioEnvironment.context.createBufferSource();
           sampleBuffer.buffer = buffer;
           window.AudioEnvironment.sampleBuffers[stripFileName(file)] = sampleBuffer;
-          console.log(window.AudioEnvironment.sampleBuffers);
         });
       };
     request.send();
