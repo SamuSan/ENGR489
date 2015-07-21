@@ -1,22 +1,6 @@
 body {
-  padding: 50px;
+  /*padding: 2%;*/
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #007FB2;
 }
 
-a {
-  color: #00B7FF;
-}
-
-.input-div{
-  width:50%;
-  height:75%;
-  margin: 0px auto;
-
-}
-
-.input-textarea{
-  width: 100%;
-  height: 300px;
-  margin: 0px auto;
-  font-size: 18px;
-}
