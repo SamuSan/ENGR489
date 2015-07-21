@@ -3,10 +3,10 @@ var Envelope = function(amplitude, context) {
 
   var amplitude = amplitude;
   var DEFAULT_ATTACK_SETTING  = 0.1;
-  var DEFAULT_RELEASE_SETTING = 0.5;
+  var DEFAULT_RELEASE_SETTING = 0.1;
 
   self.attackTime   = DEFAULT_ATTACK_SETTING;
-  self.sustainTime  = 0;
+  self.sustainTime  = 0.2;
   self.releaseTime  = DEFAULT_RELEASE_SETTING;
   var parma = null;
 

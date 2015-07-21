@@ -8,11 +8,11 @@ function Osc (context, waveform, note) {
   var gain        = null;
   var env         = null;
   var pan         = null;
-  var GAIN_VALUE  = 0.2;
+  var GAIN_VALUE  = 0.05;
 
   self.play = function(startTime) {
     createOscillator();
-    // env.trigger();
+    env.trigger();
     oscillator.start(startTime);
   };
 
@@ -30,7 +30,7 @@ function Osc (context, waveform, note) {
 
   function createOscillator() {
     initOscillator();
-    // routeNodes();
+    routeNodes();
     // return oscillator;
   }
 
@@ -38,6 +38,18 @@ function Osc (context, waveform, note) {
     oscillator = context.createOscillator();
     oscillator.frequency.value = self.frequency;
     oscillator.type = self.waveform;
-    oscillator.connect(context.destination);
+
+    // oscillator.connect(context.destination);
+  }
+
+  function routeNodes() {
+    gain = context.createGain();
+    env  = new Envelope(GAIN_VALUE, context);
+    pan  = context.createStereoPanner();
+
+    gain.value = GAIN_VALUE;
+    self.connect(gain);
+    env.connect(gain.gain);
+    gain.connect(context.destination);
   }
 }
