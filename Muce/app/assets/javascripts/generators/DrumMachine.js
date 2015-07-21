@@ -1,14 +1,31 @@
-function DrumMachine(name, beat) {
+function DrumMachine(name) {
   var self = this;
   Instrument.apply(self, [name]);
 
-  var hatSample   = window.AudioEnvironment.sampleBuffers['hat'];
-  var snareSample = window.AudioEnvironment.sampleBuffers['snare'];
-  var kickSample  = window.AudioEnvironment.sampleBuffers['kick'];
+  var drums = {};
+  init();
 
-  var hat   = new Sampler('hat');
-  var snare = new Sampler('snare');
-  var kick  = new Sampler('kick');
+  self.hithat = drums['hat'];
+  self.snare  = drums['snare'];
+  self.kick   = drums['kick'];
 
-  var rhythm = RhythmUtil.ROCK_BEAT_ONE;
+  self.drums = function(){
+    var samplers = [];
+    for(var key in drums){
+      console.log(key);
+      samplers.push(drums[key]);
+    }
+    return samplers;
+  }
+    //TODO add a drum
+  self.addDrum = function() {
+    console.log('not yet implemented');
+  }
+
+  //Private
+  function init() {
+    drums['hat']   = new Sampler('hat', null, window.AudioEnvironment.sampleBuffers['hat']);
+    drums['snare'] = new Sampler('snare', null, window.AudioEnvironment.sampleBuffers['snare']);
+    drums['kick']  = new Sampler('kick', null, window.AudioEnvironment.sampleBuffers['kick']);
+  }
 }

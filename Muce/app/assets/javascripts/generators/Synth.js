@@ -17,13 +17,13 @@ var Synth = function(name, waveform, chordShape) {
     oscillators.forEach(function(osc) {
       // env.trigger();
       osc.play(startTime);
-      osc.shhh(endTime);
+      osc.stop(endTime);
     });
   }
 
   self.stop = function(endTime) {
     oscillators.forEach(function(osc) {
-      osc.shhh(endTime);
+      osc.stop(endTime);
     });
   }
 

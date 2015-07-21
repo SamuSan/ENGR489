@@ -5,7 +5,10 @@ function Osc (context, waveform, note) {
   self.waveform   = waveform;
   self.frequency  = MIDIUtils.noteNumberToFrequency(note);
   var oscillator  = null;
-  var GAIN_VALUE  = 0.3;
+  var gain        = null;
+  var env         = null;
+  var pan         = null;
+  var GAIN_VALUE  = 0.2;
 
   self.play = function(startTime) {
     createOscillator();
@@ -13,7 +16,7 @@ function Osc (context, waveform, note) {
     oscillator.start(startTime);
   };
 
-  self.shhh = function(endTime) {
+  self.stop = function(endTime) {
     oscillator.stop(endTime);
   };
 

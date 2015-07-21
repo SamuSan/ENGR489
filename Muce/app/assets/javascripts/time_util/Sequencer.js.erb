@@ -2,14 +2,14 @@ var Sequencer =  function() {
   var self = this;
 
 var startedrunning = 0; // TODO for testing remove me
-  var tempo = 60.0;
+  var tempo = 140.0;
   var oneMinute = 60.0;
   var eventsQueued = [];
   var nextEventTime = 0.0;
   var currentSubdivision = 4;  // TODO 16ths eg 4 subs per beat this is restrictive, time based is gross, options?
   var currentStepNumber = 0;
   var performanceRunning = false;
-  var oneBeatTimeValue = (oneMinute / tempo) ;
+  var oneBeatTimeValue = (oneMinute / tempo);
   var schedulingLookAhead = 50.0;
   var scheduleEventHorizon = 0.1;
   var sequencerWorker = null;
@@ -17,7 +17,7 @@ var startedrunning = 0; // TODO for testing remove me
 
   function advanceStep() {
     oneBeatTimeValue = (oneMinute / tempo);
-    nextEventTime += (1.0 / currentSubdivision) * oneBeatTimeValue;
+    nextEventTime += (oneBeatTimeValue / currentSubdivision);
 
     currentStepNumber ++;
     if(currentStepNumber == 16) {
@@ -27,17 +27,15 @@ var startedrunning = 0; // TODO for testing remove me
 
   function scheduleEvent( stepNumber, time ) {
     console.log(stepNumber % 4);
-    //TODO this is fucked youre scheduing all four parts every tick you cunt
-    //FIX THAT SHIT
     self.parts.forEach(function(part) {
       var startTime = nextEventTime;
-      // db(part.generator.name() + "" + startTime.toFixed(5))
-      // db(!eventsQueued[part.generator.name() + "" + startTime.toFixed(5)]);
       if(!eventsQueued[part.generator.name() + "" + startTime.toFixed(5)]){
         db("SCHEDULING Next Event Time:  " + nextEventTime.toFixed(5) );
         var endTime = nextEventTime + (oneBeatTimeValue / currentSubdivision);
-        eventsQueued.push(part.generator.name() + "" + startTime.toFixed(5));
-        if (part.rhythm[stepNumber % 4] == 1) {
+        eventsQueued.push(part.generator.name() + "" + startTime.toFixed(5) );
+        console.log("Index of the shits" +  part.rhythm.length );
+        if (part.rhythm[stepNumber] == 1) {
+          db(part.generator.name() + "" + startTime.toFixed(5)+ "ends at " + endTime.toFixed(5))
           part.generator.play(startTime, endTime);
         };
       }
@@ -97,6 +95,6 @@ var startedrunning = 0; // TODO for testing remove me
   }
 
   function db(message) {
-    // console.log(message);
+    console.log(message);
   }
 }
