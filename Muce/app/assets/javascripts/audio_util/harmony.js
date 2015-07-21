@@ -18,7 +18,9 @@
     chordFromName: function (chordName) {
       var note = chordName.split(nameSeperator)[0].toUpperCase();
       var tonality = chordName.split(nameSeperator)[1].toUpperCase();
-      var noteNumber = MIDIUtils.noteNameToNoteNumber(note + '-4');
+      var pitchGroup = "";
+      note.length == 2 ? pitchGroup = "4" : pitchGroup = "-4";
+      var noteNumber = MIDIUtils.noteNameToNoteNumber(note + pitchGroup);
 
       return constructChordNotes(noteNumber, tonality);
     },
