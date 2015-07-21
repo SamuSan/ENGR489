@@ -13,7 +13,7 @@ var Synth = function(name, waveform, chordShape) {
     self.createOsc();
     oscillators.forEach(function(osc) {
       osc.play(startTime);
-      osc.shhh(endTime);
+      osc.stop(endTime);
     });
   }
 
