@@ -6,8 +6,8 @@ function LoopPlayer(name, filename) {
   var playing       = false;
   var file          = window.FileUtils.fileLocation(filename);
   var audioBuffer   = null;
-  var gain        = null;
-  var GAIN_VALUE    =0.5;
+  var gain          = null;
+  var GAIN_VALUE    = 0.5;
   self.sampleBuffer = null;
   loadSampleFile(file);
 

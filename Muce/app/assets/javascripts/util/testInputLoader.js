@@ -1,5 +1,7 @@
 $(function(){
   var inputs  = [
+
+      "def rhy = Rhythm\n\n",
       "def syn = Synth.name(\"Synful\") type(\"triangle\").play(rhy.QU)\n",
       "def d = DrumMachine.name(\"Gerald\").play(rhy.HOUSE_BEAT)\n",
       "def r = LoopPlayer.name(\"Rhodes\") sample(\"rh_samp_1.wav\").play(rhy.FOUR_BAR_LOOP)\n",
