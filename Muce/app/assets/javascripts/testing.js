@@ -14,7 +14,7 @@ function Test() {
     var l = new LoopPlayer('l', 'rh_samp_1.wav');
     var shk = new LoopPlayer('shk', '626 SHAKER.wav' );
     var tamb = new LoopPlayer('tamb', 'Alchemist Shaker 3.wav' );
-    var v = new LoopPlayer('v', 'single_sample.wav');
+    // var v = new LoopPlayer('v', 'single_sample.wav');
     // l.syncWithTempo();
     // parts.push(new Part(s, rhy.CR));
     // parts.push(new Part(e, rhy.SQ));
