@@ -6,6 +6,8 @@ function Sampler(name, fileName, buffer) {
   var playing       = false;
   var file          = window.FileUtils.fileLocation(filename);
   var audioBuffer   = buffer.buffer || null;
+  var gain          = null;
+  var GAIN_VALUE    = 0.1;
   self.sampleBuffer = null;
 
   audioBuffer ? assignBuffer() : loadSampleFile(file);
@@ -27,7 +29,7 @@ function Sampler(name, fileName, buffer) {
       playing = !playing;
       assignBuffer();
       self.sampleBuffer.start(startTime);
-      console.log('playing');
+      // console.log('playing');
     }
   }
 
@@ -56,6 +58,10 @@ function Sampler(name, fileName, buffer) {
           audioBuffer = buffer;
           self.sampleBuffer = self.getContext().createBufferSource();
           self.sampleBuffer.buffer = audioBuffer;
+          gain = self.getContext().createGain();
+          self.sampleBuffer.buffer.connect(gain);
+          gain.value = GAIN_VALUE;
+          gain.connect(self.getContext().destination);
           loaded = true;
         });
       };

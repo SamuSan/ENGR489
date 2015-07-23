@@ -2,7 +2,7 @@ var Sequencer =  function() {
   var self = this;
 
 var startedrunning = 0; // TODO for testing remove me
-  var tempo = 140.0;
+  var tempo = 120.0;
   var oneMinute = 60.0;
   var eventsQueued = [];
   var nextEventTime = 0.0;
@@ -20,21 +20,22 @@ var startedrunning = 0; // TODO for testing remove me
     nextEventTime += (oneBeatTimeValue / currentSubdivision);
 
     currentStepNumber ++;
-    if(currentStepNumber == 16) {
+    if(currentStepNumber == 64) {
       currentStepNumber = 0;
     }
   }
 
   function scheduleEvent( stepNumber, time ) {
-    console.log(stepNumber % 4);
+
     self.parts.forEach(function(part) {
       var startTime = nextEventTime;
       if(!eventsQueued[part.generator.name() + "" + startTime.toFixed(5)]){
         db("SCHEDULING Next Event Time:  " + nextEventTime.toFixed(5) );
         var endTime = nextEventTime + (oneBeatTimeValue / currentSubdivision);
         eventsQueued.push(part.generator.name() + "" + startTime.toFixed(5) );
-        console.log("Index of the shits" +  part.rhythm.length );
+        // console.log("Index of the shits" +  part.rhythm.length );
         if (part.rhythm[stepNumber] == 1) {
+          // console.log("Sequcinfg at " + stepNumber)
           db(part.generator.name() + "" + startTime.toFixed(5)+ "ends at " + endTime.toFixed(5))
           part.generator.play(startTime, endTime);
         };
@@ -95,6 +96,6 @@ var startedrunning = 0; // TODO for testing remove me
   }
 
   function db(message) {
-    console.log(message);
+    // console.log(message);
   }
 }

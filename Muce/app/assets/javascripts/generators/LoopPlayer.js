@@ -6,6 +6,8 @@ function LoopPlayer(name, filename) {
   var playing       = false;
   var file          = window.FileUtils.fileLocation(filename);
   var audioBuffer   = null;
+  var gain        = null;
+  var GAIN_VALUE    =0.5;
   self.sampleBuffer = null;
   loadSampleFile(file);
 
@@ -32,7 +34,7 @@ function LoopPlayer(name, filename) {
       playing = !playing;
       assignBuffer();
       self.sampleBuffer.start();
-      console.log('playing');
+      // console.log('playing');
     }
   }
 
@@ -64,6 +66,11 @@ function LoopPlayer(name, filename) {
           audioBuffer = buffer;
           self.sampleBuffer = self.getContext().createBufferSource();
           self.sampleBuffer.buffer = audioBuffer;
+
+          gain = self.getContext().createGain();
+          gain.value = GAIN_VALUE;
+          self.sampleBuffer.connect(gain);
+          gain.connect(self.getContext().destination);
           loaded = true;
           console.log('loaded');
         });
@@ -74,7 +81,11 @@ function LoopPlayer(name, filename) {
   function assignBuffer() { // TODO kill me
     self.sampleBuffer = self.getContext().createBufferSource();
     self.sampleBuffer.buffer = audioBuffer;
-    self.sampleBuffer.connect(self.getContext().destination);
+              gain = self.getContext().createGain();
+          gain.value = GAIN_VALUE;
+          self.sampleBuffer.connect(gain);
+          gain.connect(self.getContext().destination);
+    // self.sampleBuffer.connect(self.getContext().destination);
   }
 
   function cloneBuffer(buffer) {
