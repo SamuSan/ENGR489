@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 function Osc (context, waveform, note) {
   var self = this;
