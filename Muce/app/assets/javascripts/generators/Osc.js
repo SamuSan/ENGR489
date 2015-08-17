@@ -5,14 +5,18 @@ function Osc (context, waveform, note) {
   self.waveform   = waveform;
   self.frequency  = MIDIUtils.noteNumberToFrequency(note);
   var oscillator  = null;
+  var chainTerminal = null;
   var gain        = null;
   var env         = null;
   var pan         = null;
   var panning     = 0;
   var GAIN_VALUE  = 0.05;
 
+  self.init = function() {
+    createVoice();
+  }
+
   self.play = function(startTime) {
-    createOscillator();
     env.trigger();
     oscillator.start(startTime);
   };
@@ -22,11 +26,15 @@ function Osc (context, waveform, note) {
   };
 
   self.connect = function(node) {
-    oscillator.connect(node);
+    chainTerminal.connect(node);
+    chainTerminal = node;
   };
 
+  self.chainTerminal = function() {
+    return chainTerminal;
+  }
+
   self.adjustPanning = function(panValue) {
-    console.log("ads");
     panning = panValue;
   }
 
@@ -34,7 +42,7 @@ function Osc (context, waveform, note) {
     env.set(settings);
   };
 
-  function createOscillator() {
+  function createVoice() {
     initOscillator();
     routeNodes();
   };
@@ -53,9 +61,10 @@ function Osc (context, waveform, note) {
     pan.pan.value = panning;
     gain.value = GAIN_VALUE;
 
-    self.connect(gain);
+    oscillator.connect(gain);
     env.connect(gain.gain);
     gain.connect(pan);
     pan.connect(context.destination);
+    chainTerminal = pan;
   };
 }

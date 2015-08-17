@@ -5,24 +5,26 @@ var Synth = function(name, waveform, chordShape) {
   Instrument.apply(self, [name]);
 
   var oscWaveform = waveform;
-  var oscillators = [];
-  var gains       = [];
+  var voices      = [];
+  var filter      = new Filter("SynFilter", { "frequency" : 1000, "type" : 'highpass', "Q" : 100 });
   var chord       = chordShape;
   var notes       = HarmonyUtil.chordFromName(chord);
   var oscPanValue = 0;
+  var voicePanValue = 0;
+  var voiceBuss   = self.getContext().createChannelMerger(notes.length);
 
   self.play = function(startTime, endTime) { //TODO reconsider this naming, couldbe called schedule gets called by play
-    self.createOsc();
-    oscillators.forEach(function(osc) {
-      osc.adjustPanning(oscPanValue);
-      osc.play(startTime);
-      osc.stop(endTime);
+    self.createVoice();
+    voices.forEach(function(voice) {
+      voice.adjustPanning(voicePanValue);
+      voice.play(startTime);
+      voice.stop(endTime);
     });
   };
 
   self.stop = function(endTime) {
-    oscillators.forEach(function(osc) {
-      osc.stop(endTime);
+    voices.forEach(function(voice) {
+      voice.stop(endTime);
     });
   };
 
@@ -31,8 +33,8 @@ var Synth = function(name, waveform, chordShape) {
   };
 
   self.setADSR = function(settings) {
-    oscillators.forEach(function(osc) {
-      osc.setADSR(settings); //TODO this aint gonna work the ENV gets killed everytine with the OSC
+    voices.forEach(function(voice) {
+      voice.setADSR(settings); //TODO this aint gonna work the ENV gets killed everytine with the OSC
     });
   };
 
@@ -40,10 +42,18 @@ var Synth = function(name, waveform, chordShape) {
     oscPanValue = panValue;
   };
 
-  Synth.prototype.createOsc = function() {
-    oscillators = [];
+  Synth.prototype.createVoice = function() {
+    voices = [];
     notes.forEach(function(note){
-      oscillators.push(new Osc(self.getContext(), oscWaveform, note))
+      voices.push(new Osc(self.getContext(), oscWaveform, note))
     });
+    for (var i = 0; i < voices.length; i++) {
+      voices[i].init();
+      // voices[i].connect(voiceBuss, 0, i);
+    };
+
+    // voiceBuss.connect(self.getContext().destination);
+    // Filter
+    
   };
 }
