@@ -28,10 +28,10 @@ $(function(){
   $('#play-button').on('click', function(e){
     console.log("gotta clicks");
     var input = $('#text-input').val();
-    new HopperWrapper().interpret(input);
+    // new HopperWrapper().interpret(input);
 
-    // t = new Test();
-    // t.startTest();
+    t = new Test();
+    t.startTest();
   });
 
     $('#stop-button').on('click', function(e){

@@ -1,4 +1,4 @@
-function Filter (name, settings) {
+function Filter (settings) {
   var self = this;
   Effect.apply(self, [name]);
   var filter = self.getContext().createBiquadFilter();

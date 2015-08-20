@@ -1,4 +1,4 @@
-function HopperWrapper(){ 
+function HopperWrapper(){
   var self = this;
 
   hopper.prelude.then(function (prelude) {
@@ -19,18 +19,32 @@ function HopperWrapper(){
       return synth;
     });
 
-  }).then(function(prelude) {
     var drumMachine = hopper.runtime.object();
 
-    drumMachine.name = hopper.runtime.method("name()", [1],
+    drumMachine.name = hopper.runtime.method("name()", 1,
       function (name) {
-        return name[0].asPrimitiveString().then(function (name) {
+        return name.asPrimitiveString().then(function (name) {
           return new DrumMachine(name);
         });
       });
 
     prelude.DrumMachine = hopper.runtime.method("DrumMachine", 0, function(){
       return drumMachine;
+    });
+
+    var loopPlayer = hopper.runtime.object();
+
+    loopPlayer.name_filename = hopper.runtime.method("name() filename()", [1, 1],
+      function (name, filename) {
+        return name[0].asPrimitiveString().then(function (name) {
+          return filename[0].asPrimitiveString().then(function(filename) {
+            return new LoopPlayer(name, filename);
+          })
+        });
+      });
+
+    prelude.LoopPlayer = hopper.runtime.method("LoopPlayer", 0, function(){
+      return loopPlayer;
     });
   });
 
