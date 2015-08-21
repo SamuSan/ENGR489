@@ -25,11 +25,15 @@
       return constructChordNotes(noteNumber, tonality);
     },
 
+    frequencyFromNoteNumber: function(number) {
+      return MIDIUtils.noteNumberToFrequency(number);
+    },
+
     invertChord: function (chord) {
       inverted = chord.slice(1);
       inverted.push(chord[0] + OCTAVE);
       return inverted;
-    } 
+    }
   };
 
   function constructChordNotes (noteNumber, tonality){

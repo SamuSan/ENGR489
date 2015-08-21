@@ -16,6 +16,17 @@ function Osc (context, waveform, note) {
     createVoice();
   }
 
+//Live functions
+  self.playNote = function() {
+    self.init();
+    oscillator.start();
+  };
+
+  self.stopNote = function() {
+    oscillator.stop();
+  };
+
+//Loopbased functions
   self.play = function(startTime) {
     env.trigger();
     oscillator.start(startTime);

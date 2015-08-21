@@ -4,12 +4,13 @@ function Test() {
   var seq  = new Sequencer();
   seq.init();
 
+  var performance = null;
+
   self.startTest = function() {
 
-  var s = new Synth('s','square')
+    var s = new Synth('s','square')
 
-
-
+    performance = new Performance(s);
     // var parts = []
     // // var s = new Synth('s','square', 'C-Maj7');
     // // var e = new Synth('e','triangle', 'E-Min7');
@@ -28,6 +29,6 @@ function Test() {
   }
 
   self.stopTest = function() {
-    // seq.stop();
+    performance = null;
   }
 }

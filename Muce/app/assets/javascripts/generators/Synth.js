@@ -6,25 +6,27 @@ var Synth = function(name, wave, chordShape) {
 
   var oscWaveform   = wave;
   var voices        = [];
-  var filter        = new Filter("SynFilter", { "frequency" : 1000, "type" : 'highpass', "Q" : 100 });
-  var chord         = chordShape;
-  var notes         = HarmonyUtil.chordFromName(chord);
+  var onNotes = {};
+  // var filter        = new Filter("SynFilter", { "frequency" : 1000, "type" : 'highpass', "Q" : 100 });
+  var chord         = chordShape || null;
+  // var notes         = HarmonyUtil.chordFromName(chord);
   var oscPanValue   = 0;
   var voicePanValue = 0;
-  var voiceBuss     = self.getContext().createChannelMerger(notes.length);
+  // var voiceBuss     = self.getContext().createChannelMerger(notes.length);
 
   //Live play functions
-  self.noteOn= function(){
+  self.noteOn = function(noteNumber){
+    var voice  = new Osc(self.getContext(), oscWaveform, noteNumber);
+    voice.playNote();
+    onNotes[noteNumber] = voice;
+    console.log("playing:: " + noteNumber);
+  } 
 
+ self.noteOff = function(noteNumber){
+    onNotes[noteNumber].stopNote();
+
+    console.log(":stopping: " + noteNumber);
   }
-
- self.noteOff = function(){
-    
-  }
-
-
-
-
 
   //Loop based functions
   self.play = function(startTime, endTime) { //TODO reconsider this naming, couldbe called schedule gets called by play

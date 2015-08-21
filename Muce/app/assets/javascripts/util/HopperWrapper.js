@@ -46,6 +46,19 @@ function HopperWrapper(){
     prelude.LoopPlayer = hopper.runtime.method("LoopPlayer", 0, function(){
       return loopPlayer;
     });
+
+    var performance = hopper.runtime.object();
+
+    performance.instrument = hopper.runtime.method("instrument()", 1, 
+      function(instrument) {
+        return instrument.asPrimitiveString().then(function() {
+          return new Performance(instrument);
+        });
+    });
+
+    prelude.Performance = hopper.runtime.method("Performance", 0, function(){
+      return performance;
+    })
   });
 
   self.interpret = function(input) {
