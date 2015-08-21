@@ -19,10 +19,12 @@ function Osc (context, waveform, note) {
 //Live functions
   self.playNote = function() {
     self.init();
+    env.triggerOn();
     oscillator.start();
   };
 
   self.stopNote = function() {
+    env.triggerOff();
     oscillator.stop();
   };
 
