@@ -2,21 +2,21 @@ function MidiController(midiConnection) {
   var self = this;
   var connection =  midiConnection;
   startLoggingMIDIInput(connection, null);
-  var instrumentsConnected = false;
+  var instrumentConnected = false;
   var instrument;
 
-  self.connectInstrument = function(synth) {
-    instrument = synth;
+  self.connectInstrument = function(inst) {
+    instrument = inst;
     instrumentConnected = true;
   }
 
   function onMIDIMessage( event ) {
     if(instrumentConnected){
       if(event.data[2] > 0){
-        instrument.noteOn(event.data[1]);
+          instrument.noteOn(event.data[1]);
       }
       else{
-        instrument.noteOff(event.data[1]);
+          instrument.noteOff(event.data[1]);
       }
     }
   }

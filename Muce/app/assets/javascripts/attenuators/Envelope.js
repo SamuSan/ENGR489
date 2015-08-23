@@ -2,8 +2,8 @@ var Envelope = function(amplitude, context) {
   var self = this;
 
   var amplitude = amplitude;
-  var DEFAULT_ATTACK_SETTING  = 0.1;
-  var DEFAULT_RELEASE_SETTING = 0.05;
+  var DEFAULT_ATTACK_SETTING  = 0.01;
+  var DEFAULT_RELEASE_SETTING = 1.1;
 
   self.attackTime   = DEFAULT_ATTACK_SETTING;
   self.sustainTime  = 0.1;
@@ -26,18 +26,13 @@ var Envelope = function(amplitude, context) {
     var now = context.currentTime;
     parma.cancelScheduledValues(now);
     parma.linearRampToValueAtTime(0, now + self.releaseTime);
+    return now + self.releaseTime;
   }
 
 
-  self.set = function (settings) { // TODO ask are optionals and hash args ok in Grace
-    if(settings['attack']){
-      self.attackTime = settings['attack'];
-    }
-    if(settings['sustain']){
-      self.sustainTime = settings['sustain'];
-    }
-    if(settings['release']){
-      self.releaseTime = settings['release'];
-    }
+  self.setASR = function (settings) { // TODO ask are optionals and hash args ok in Grace
+    self.attackTime = settings["A"] || self.attackTime;
+    self.sustainTime = settings["R"] || self.sustainTime;
+    self.releaseTime = settings["S"] || self.releaseTime;
   }
 }

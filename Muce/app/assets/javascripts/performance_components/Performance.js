@@ -1,5 +1,5 @@
-function Performance(synthesiser) {
+function Performance(instrument) {
   var self = this;
   var midi = window.AudioEnvironment.MidiController;
-  midi.connectInstrument(synthesiser);
+    midi.connectInstrument(instrument);
 }

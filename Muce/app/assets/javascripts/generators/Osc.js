@@ -5,27 +5,26 @@ function Osc (context, waveform, note) {
   self.waveform   = waveform;
   self.frequency  = MIDIUtils.noteNumberToFrequency(note);
   var oscillator  = null;
-  var chainTerminal = null;
   var gain        = null;
-  var env         = null;
+  var GAIN_VALUE  = 0.05;
+  var env         = new Envelope(GAIN_VALUE, context);
   var pan         = null;
   var panning     = 0;
-  var GAIN_VALUE  = 0.05;
 
-  self.init = function() {
+
+  self.init = function(envSettings) {
+    env.setASR(envSettings);
     createVoice();
   }
 
 //Live functions
   self.playNote = function() {
-    self.init();
     env.triggerOn();
     oscillator.start();
   };
 
   self.stopNote = function() {
-    env.triggerOff();
-    oscillator.stop();
+    oscillator.stop(env.triggerOff());
   };
 
 //Loopbased functions
@@ -39,20 +38,16 @@ function Osc (context, waveform, note) {
   };
 
   self.connect = function(node) {
-    chainTerminal.connect(node);
-    chainTerminal = node;
+    gain.connect(node);
+    node.connect(pan);
   };
-
-  self.chainTerminal = function() {
-    return chainTerminal;
-  }
 
   self.adjustPanning = function(panValue) {
     panning = panValue;
   }
 
-  self.setADSR = function(settings) {
-    env.set(settings);
+  self.setASR = function(settings) {
+    envAsr = settings;
   };
 
   function createVoice() {
@@ -68,7 +63,6 @@ function Osc (context, waveform, note) {
 
   function routeNodes() {
     gain = context.createGain();
-    env  = new Envelope(GAIN_VALUE, context);
     pan  = context.createStereoPanner();
 
     pan.pan.value = panning;
@@ -78,6 +72,5 @@ function Osc (context, waveform, note) {
     env.connect(gain.gain);
     gain.connect(pan);
     pan.connect(context.destination);
-    chainTerminal = pan;
   };
 }
