@@ -8,7 +8,8 @@ var Synth = function(name, wave, chordShape) {
   var voices          = [];
   var onNotes         = {};
   var filterSettings  = { "frequency" : 1000, "type" : 'highpass', "Q" : 10 };
-  var envSettings     = { "A" : 0.01, "S" : 0.01, "R" : 0.1 };
+  var envSettings     = { "A" : 0.05, "S" : 0.01, "R" : 0.1 };
+  var verb;
   var chord           = chordShape || null;
   // var notes         = HarmonyUtil.chordFromName(chord);
   var oscPanValue     = 0;
@@ -20,6 +21,7 @@ var Synth = function(name, wave, chordShape) {
     var voice = new Osc(self.getContext(), oscWaveform, noteNumber);
     voice.init(envSettings);
     voice.connect(new Filter(filterSettings).filter);
+    verb ? voice.connect(self.getContext().createConvolver()) : null;
     voice.playNote();
     onNotes[noteNumber] = voice;
   }

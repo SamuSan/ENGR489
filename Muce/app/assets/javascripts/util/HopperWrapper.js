@@ -51,9 +51,7 @@ function HopperWrapper(){
 
     performance.instrument = hopper.runtime.method("instrument()", 1, 
       function(instrument) {
-        return instrument.asPrimitiveString().then(function() {
-          return new Performance(instrument);
-        });
+        return new Performance(instrument);
     });
 
     prelude.Performance = hopper.runtime.method("Performance", 0, function(){

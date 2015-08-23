@@ -1,7 +1,7 @@
 $(function(){
   var inputs  = [
-    "def s = Synth.name(\"Bob\") wave(\"sine\") chord(\"C-Maj7\")\n",
-    "def d = DrumMachine.name(\"d\")",
+    "def s = Synth.name(\"Bob\") wave(\"sine\") chord(\"\")\n",
+    "def p = Performance.instrument(s)\n",
     ]
 
   inputs.forEach(function(input){
