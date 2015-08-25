@@ -8,10 +8,11 @@ var Synth = function(name, wave, chordShape) {
   var voices          = [];
   var onNotes         = {};
   var filterSettings  = { "frequency" : 1000, "type" : 'highpass', "Q" : 10 };
-  var envSettings     = { "A" : 0.05, "S" : 0.01, "R" : 0.1 };
+  var envSettings     = { "A" : 0.1, "S" : 0.11, "R" : 0.5 };
   var verb;
   var chord           = chordShape || null;
-  // var notes         = HarmonyUtil.chordFromName(chord);
+  var notes;
+  chord ? notes = HarmonyUtil.chordFromName(chord) : notes = null;
   var oscPanValue     = 0;
   var voicePanValue   = 0;
   // var voiceBuss     = self.getContext().createChannelMerger(notes.length);
@@ -56,8 +57,16 @@ var Synth = function(name, wave, chordShape) {
     });
   };
 
-  self.setEnvelope = function(settings) {
-    envSettings = settings;
+  self.setEnvelopeAttack = function(attackSetting) {
+    settings["A"] = attackSetting;
+  };
+
+  self.setEnvelopeSustain = function(sustainSetting) {
+    settings["S"] = sustainSetting;
+  };
+
+  self.setEnvelopeRelease = function(releaseSetting) {
+    settings[""] = releaseSetting;
   };
 
   self.pan = function(panValue) {
