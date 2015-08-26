@@ -1,20 +1,24 @@
 function Test() {
   var self = this;
   var rhy  = new RhythmUtil();
-  var seq  = new Sequencer();
-  seq.init();
+  var seq;
+  // seq.init();
 
   var performance = null;
 
   self.startTest = function() {
 
     // var s = new Synth('s','sine')
-    var x = new Synth('s','triangle');
-    x.setEnvelope({ "A" : 1.0, "S" : 1.0, "R" : 5.0 });
-    x.insertReverb();
+    var parts = [];
+    var x = new Synth('s','square');
+    x.setEnvelopeRelease(2.0);
+    // x.insertReverb();
         // var y = new Synth('s','square')
+    var d = new DrumMachine('d');
+    parts.push(new Part(d, rhy.ROCK_BEAT_ONE));
+    seq = new Sequencer(parts);
 
-    performance = new Performance(x);
+    performance = new Performance(x, seq);
     // var parts = []
     // // // var s = new Synth('s','square', 'C-Maj7');
     // // // var e = new Synth('e','triangle', 'E-Min7');

@@ -1,7 +1,7 @@
-var Sequencer =  function() {
+function Sequencer (instrument_parts) {
   var self = this;
-
-var startedrunning = 0; // TODO for testing remove me
+  var parts = new Arranger(instrument_parts).arrange();
+  var startedrunning = 0; // TODO for testing remove me
   var tempo = 120.0;
   var oneMinute = 60.0;
   var eventsQueued = [];
@@ -68,7 +68,7 @@ var startedrunning = 0; // TODO for testing remove me
    sequencerWorker.postMessage('stop'); 
   }
 
-  self.run = function(parts) {
+  self.run = function() {
     db("Running");
     performanceRunning = !performanceRunning;
     performanceRunning ? startPerformance(parts) : stopPerformance();

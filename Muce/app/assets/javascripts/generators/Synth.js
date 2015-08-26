@@ -58,15 +58,15 @@ var Synth = function(name, wave, chordShape) {
   };
 
   self.setEnvelopeAttack = function(attackSetting) {
-    settings["A"] = attackSetting;
+    envSettings["A"] = attackSetting;
   };
 
   self.setEnvelopeSustain = function(sustainSetting) {
-    settings["S"] = sustainSetting;
+    envSettings["S"] = sustainSetting;
   };
 
   self.setEnvelopeRelease = function(releaseSetting) {
-    settings[""] = releaseSetting;
+    envSettings["R"] = releaseSetting;
   };
 
   self.pan = function(panValue) {

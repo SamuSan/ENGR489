@@ -1,7 +1,8 @@
 function Sampler(name, fileName, buffer) {
   var self = this;
-  Instrument.apply(self, [name]);
+  Instrument.apply(self);
 
+  var name = name;
   var loaded        = false;
   var playing       = false;
   var file          = window.FileUtils.fileLocation(filename);
@@ -37,6 +38,9 @@ function Sampler(name, fileName, buffer) {
     }
   }
 
+  self.name = function(){
+    return name;
+  }
   //Private
   function updatePlayRate(rate) {
     self.sampleBuffer.playbackRate.value = rate;
