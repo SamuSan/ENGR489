@@ -11,14 +11,14 @@ function Test() {
     // var s = new Synth('s','sine')
     var parts = [];
     var x = new Synth('s','square');
-    x.setEnvelopeRelease(2.0);
+    x.setEnvelopeRelease(5.0);
     // x.insertReverb();
         // var y = new Synth('s','square')
     var d = new DrumMachine('d');
     parts.push(new Part(d, rhy.ROCK_BEAT_ONE));
     seq = new Sequencer(parts);
 
-    performance = new Performance(x, seq);
+    performance = new Performance(x);
     // var parts = []
     // // // var s = new Synth('s','square', 'C-Maj7');
     // // // var e = new Synth('e','triangle', 'E-Min7');

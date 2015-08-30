@@ -32,7 +32,7 @@ var Envelope = function(amplitude, context) {
 
   self.setASR = function (settings) { // TODO ask are optionals and hash args ok in Grace
     self.attackTime = settings["A"] || self.attackTime;
-    self.sustainTime = settings["R"] || self.sustainTime;
-    self.releaseTime = settings["S"] || self.releaseTime;
+    self.sustainTime = settings["S"] || self.sustainTime;
+    self.releaseTime = settings["R"] || self.releaseTime;
   }
 }

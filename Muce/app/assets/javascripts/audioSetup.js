@@ -2,6 +2,7 @@ $(function(){
   var sampleFiles   = [ window.FileUtils.fileLocation("kick.wav"),
                         window.FileUtils.fileLocation("snare.wav"),
                         window.FileUtils.fileLocation("hat.wav")];
+  var convolutionFiles = [ window.FileUtils.fileLocation("verb_impulse.wav") ];
 
   console.log("Loading Audio Envirinomet")
   window.AudioEnvironment = function(){};
@@ -26,6 +27,10 @@ $(function(){
     };
   }
 
+  function loadConvolutionFiles(file){
+    window.AudioEnvironment.loadSampleFile(file);
+  }
+
   window.AudioEnvironment.loadSampleFile = function(file) {
     var request = new XMLHttpRequest();
     request.open("GET", file, true);
@@ -46,4 +51,5 @@ $(function(){
     return filename = file.split('/')[2].split('.')[0];
   }
  setUpDrumMachineSamples();
+ loadConvolutionFiles(convolutionFiles[0]);
 });

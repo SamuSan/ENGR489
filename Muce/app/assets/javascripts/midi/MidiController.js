@@ -12,7 +12,7 @@ function MidiController(midiConnection) {
 
   function onMIDIMessage( event ) {
     if(instrumentConnected){
-      if(event.data[2] > 0){
+      if(event.data[2] > 65){
           instrument.noteOn(event.data[1]);
       }
       else{

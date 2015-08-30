@@ -1,28 +1,44 @@
 // Place all the styles related to the performance controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-.input-textarea{
-  background-color: #D2D2D2;
+
+.title-div{
+ font-size: 4em;
+ margin:0% 0% 2% 0%;
+ padding: 0% 0% 0% 20%
 }
-.header-div{
-  font-size: 4em;
-  padding: 0% 0% 1% 0%;
+.title-span{
+  display:block;
+}
+.content-div{
+  // margin: 0px 0px 0px 0px
 }
 .input-div{
-  height:75%;
-  margin: 0% 5% 0% 5%;
-
-}
-.input-textarea{
   width: 100%;
-  max-width: 100%;
-  max-height: 300px;
-  height: 300px;
-  border-radius: 5px;
-  font-size: 18px;
+  min-width: 100%;
+  height: 100%;
+  min-height: 500px;
+  font-size: 4em;
+  padding: 1% 1% 0% 1%;
 }
-.button{
 
-  width: 50%;
-  margin: 0.1% 25% 0.1% 25%;
+.controls-div{
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  // min-height: 500px;
+  padding: 0% 5% 0% 5%;
+  background-color: #007FB2;
 }
+
+.input-textarea{
+  height: 100%;
+  min-height: 500px;
+  font-size: 0.4em;
+  // padding: 1% 1% 0% 1%;
+}
+.run-button{
+  display:block;
+  background-color: #47A3CB;
+}
+

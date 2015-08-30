@@ -1,6 +1,6 @@
 'use strict';
 
-var Synth = function(name, wave, chordShape) {
+var Synth = function(name, wave, chord) {
   var self = this;
   Instrument.apply(self, [name]);
 
@@ -8,9 +8,10 @@ var Synth = function(name, wave, chordShape) {
   var voices          = [];
   var onNotes         = {};
   var filterSettings  = { "frequency" : 1000, "type" : 'highpass', "Q" : 10 };
-  var envSettings     = { "A" : 0.1, "S" : 0.11, "R" : 0.5 };
-  var verb;
-  var chord           = chordShape || null;
+  var envSettings     = { "A" : 0.1, "S" : 0.11, "R" : 2.0 };
+  var effectsInserted = false;
+  var insertedEffects = [];
+  var chord           = chord || null;
   var notes;
   chord ? notes = HarmonyUtil.chordFromName(chord) : notes = null;
   var oscPanValue     = 0;
@@ -21,8 +22,7 @@ var Synth = function(name, wave, chordShape) {
   self.noteOn = function(noteNumber){
     var voice = new Osc(self.getContext(), oscWaveform, noteNumber);
     voice.init(envSettings);
-    voice.connect(new Filter(filterSettings).filter);
-    verb ? voice.connect(self.getContext().createConvolver()) : null;
+    connectEffects(voice);
     voice.playNote();
     onNotes[noteNumber] = voice;
   }
@@ -51,11 +51,19 @@ var Synth = function(name, wave, chordShape) {
     notes = HarmonyUtil.invertChord(notes);
   };
 
-  self.insertReverb = function() {
-    voices.forEach(function(voice) {
-      voice.connect(self.getContext().createConvolver()); //TODO this aint gonna work the ENV gets killed everytine with the OSC
-    });
+  self.insert = function(effectType) {
+    console.log("creating effects with: " + effectType);
+    insertedEffects.push(effectType);
+    effectsInserted = true;
   };
+
+  function connectEffects(voice) {
+    if (effectsInserted) {
+      insertedEffects.forEach(function(effectType){
+        voice.connect(EffectFactory.createEffect(effectType));
+      });
+    }
+  }
 
   self.setEnvelopeAttack = function(attackSetting) {
     envSettings["A"] = attackSetting;
