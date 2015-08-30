@@ -1,6 +1,6 @@
 function HopperWrapper(){
   var self = this;
-
+  var it = new hopper.Interpreter();
   hopper.prelude.then(function (prelude) {
     //// Synth ////
     var synth = hopper.runtime.object();
@@ -96,8 +96,17 @@ function HopperWrapper(){
   });
 
   self.interpret = function(input) {
-    window.AudioEnvironment.obs =  hopper.interpret(input, function(error) {
-      console.log(error.toString());
+    it.enter(function(){
+      it.interpret(input);
     });
+  }
+    // hopper.interpret(input, function(error) {
+    //   console.log(error.toString());
+    // });
+  self.terminate = function(input) {
+    it = null;
+    // hopper.interpret(input, function(error) {
+      // console.log(error.toString());
+    // });
   }
 }

@@ -6,13 +6,16 @@ $(function(){
   $('#play-button').on('click', function(e){
     $('#play-button').addClass('disabled');
     var input = $('#text-area').val();
-    new HopperWrapper().interpret(input);
+    hopperWrapper = new HopperWrapper();
+    hopperWrapper.interpret(input);
     // t = new Test();
     // t.startTest();
   });
 
     $('#stop-button').on('click', function(e){
-      $('#play-button').removeClass('disabled');
+      $.get('performance/stop_performance')
+      // $('#play-button').removeClass('disabled');
+      hopperWrapper.terminate();
       // t.stopTest();
   });
 });
