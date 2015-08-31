@@ -1,13 +1,18 @@
-function LoopPlayer(filename) {
+function LoopPlayer(name, filename) {
   var self = this;
   Instrument.apply(self);
 
+  var name = name;
   var loaded        = false;
   var playing       = false;
   var file          = window.FileUtils.fileLocation(filename);
   var audioBuffer   = null;
   self.sampleBuffer = null;
   loadSampleFile(file);
+
+  self.name = function() {
+    return name;
+  }
 
   self.sampleLength = function() {
     return sampleBuffer.duration();
