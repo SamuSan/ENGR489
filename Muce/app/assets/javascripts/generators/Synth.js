@@ -85,7 +85,7 @@ var Synth = function(name, wave, chord) {
     voices = [];
     notes.forEach(function(note){
       var voice = new Osc(self.getContext(), oscWaveform, note);
-      voice.init();
+      voice.init(envSettings);
       voices.push(voice)
     });
   };

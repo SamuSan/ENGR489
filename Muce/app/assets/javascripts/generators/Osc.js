@@ -29,7 +29,7 @@ function Osc (context, waveform, note) {
 
 //Loopbased functions
   self.play = function(startTime) {
-    env.trigger();
+    env.triggerOn();
     oscillator.start(startTime);
   };
 

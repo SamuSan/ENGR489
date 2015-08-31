@@ -3,7 +3,7 @@ function Performance(instrument, sequencer) {
   var seq = sequencer[0];
   var midi = window.AudioEnvironment.MidiController;
   midi.connectInstrument(instrument[0]);
-  if (seq !== undefined){
+  if (seq instanceof Sequencer){
     seq.init();
     seq.run();
   }

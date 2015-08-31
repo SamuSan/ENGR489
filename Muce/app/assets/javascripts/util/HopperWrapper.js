@@ -5,14 +5,16 @@ function HopperWrapper(){
     //// Synth ////
     var synth = hopper.runtime.object();
 
-    synth.wave_chord = hopper.runtime.method("wave() chord()", [1, 1],
-      function (wave, chord) {
+    synth.name_wave_chord = hopper.runtime.method("name() wave() chord()", [1, 1, 1],
+      function (name, wave, chord) {
+        return name[0].asPrimitiveString().then(function(name){
           return wave[0].asPrimitiveString().then(function (wave) {
             return chord[0].asPrimitiveString().then(function (chord) {
-              return new Synth(wave, chord);
+              return new Synth(name, wave, chord);
             });
           });
         });
+      });
 
     prelude.Synth = hopper.runtime.method("Synth", 0, function () {
       return synth;
@@ -96,17 +98,8 @@ function HopperWrapper(){
   });
 
   self.interpret = function(input) {
-    it.enter(function(){
-      it.interpret(input);
+    hopper.interpret(input, function(error) {
+      console.log(error.toString());
     });
-  }
-    // hopper.interpret(input, function(error) {
-    //   console.log(error.toString());
-    // });
-  self.terminate = function(input) {
-    it = null;
-    // hopper.interpret(input, function(error) {
-      // console.log(error.toString());
-    // });
   }
 }
