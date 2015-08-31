@@ -76,7 +76,9 @@ function HopperWrapper(){
 
     sequencer.parts = hopper.runtime.method("parts()", 1, 
       function(parts) {
-        return new Sequencer(parts);
+        return parts.asPrimitiveArray().then(function(parts) {
+          return new Sequencer(parts);
+        });
     });
 
     prelude.Sequencer = hopper.runtime.method("Sequencer", 0, function() {

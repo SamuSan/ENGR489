@@ -1,6 +1,6 @@
 function Arranger(partsInput) {
   var self = this;
-  var parts = [partsInput];
+  var parts = partsInput;
   var partsOutput = [];
 
   self.arrange = function() {
