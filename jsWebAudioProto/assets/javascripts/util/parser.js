@@ -1,3 +1,0 @@
-function Parser (tokens) {
-  
-}
