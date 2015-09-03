@@ -4,6 +4,8 @@ $(function(){
   var hopperWrapper = null;
 
   $('#play-button').on('click', function(e){
+    e.preventDefault();
+    $("#error-div").text("");
     $('#play-button').addClass('disabled');
     $('#stop-button').removeClass('disabled');
     var input = $('#text-area').val();
@@ -13,9 +15,16 @@ $(function(){
     // t.startTest();
   });
 
-    $('#stop-button').on('click', function(e){
-      $('#play-button').removeClass('disabled');
-      $('#stop-button').addClass('disabled');
-      window.AudioEnvironment.Performance.stop();
+  $('#stop-button').on('click', function(e){
+    e.preventDefault();
+    $('#play-button').removeClass('disabled');
+    $('#stop-button').addClass('disabled');
+    window.AudioEnvironment.Performance.stop();
   });
+
+  $('#man-button').on('click', function(e){
+    e.preventDefault();
+    window.open("assets/gm_experimental_proceedure.pdf", '_blank');
+    window.open("assets/gm_docs.pdf", '_blank');
+  })
 });

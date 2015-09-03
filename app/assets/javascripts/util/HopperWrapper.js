@@ -105,13 +105,10 @@ function HopperWrapper() {
     interpreter = new hopper.Interpreter();
     interpreter.enter(function(){
       interpreter.interpret(textInput, function(error){
+        $("#error-div").text(error.toString());
         console.log(error.toString());
       });
     });
-    console.log("FUCK MY LIFE");
-    // hopper.interpret(input, function(error) {
-    //   console.log(error.toString());
-    // });
   }
 
   self.terminate = function(){
