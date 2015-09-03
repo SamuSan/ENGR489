@@ -1,6 +1,7 @@
-function HopperWrapper(){
+function HopperWrapper() {
   var self = this;
-  var it = new hopper.Interpreter();
+  var interpreter;
+
   hopper.prelude.then(function (prelude) {
     //// Synth ////
     var synth = hopper.runtime.object();
@@ -100,8 +101,21 @@ function HopperWrapper(){
   });
 
   self.interpret = function(input) {
-    hopper.interpret(input, function(error) {
-      console.log(error.toString());
+    var textInput = input;
+    interpreter = new hopper.Interpreter();
+    interpreter.enter(function(){
+      interpreter.interpret(textInput, function(error){
+        console.log(error.toString());
+      });
     });
+    console.log("FUCK MY LIFE");
+    // hopper.interpret(input, function(error) {
+    //   console.log(error.toString());
+    // });
+  }
+
+  self.terminate = function(){
+    interpreter.prelude.stop();
+    interpreter = new hopper.Interpreter();
   }
 }

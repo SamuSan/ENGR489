@@ -16,15 +16,6 @@ $(function(){
     $('#stop-button').on('click', function(e){
       $('#play-button').removeClass('disabled');
       $('#stop-button').addClass('disabled');
-      var input = $('#text-area').val();
-
-      $.get('/', { "input" : input })
-      .done(function(response){
-        var input = JSON.parse(response)
-        $('#text-area').val(input);
-      });
-      // $('#play-button').removeClass('disabled');
-      // hopperWrapper.terminate();
-      // t.stopTest();
+      window.AudioEnvironment.Performance.stop();
   });
 });

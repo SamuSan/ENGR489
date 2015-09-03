@@ -20,6 +20,7 @@ var Synth = function(name, wave, chord) {
 
   //**** Live play functions ****//
   self.noteOn = function(noteNumber){
+    console.log("PLAYING A NOTES");
     var voice = new Osc(self.getContext(), oscWaveform, noteNumber);
     voice.init(envSettings);
     connectEffects(voice);
