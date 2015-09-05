@@ -5,7 +5,7 @@ function Sampler(name, fileName, buffer) {
   var name = name;
   var loaded        = false;
   var playing       = false;
-  var file          = window.FileUtils.fileLocation(filename);
+  var file          = window.FileUtils.fileLocation(fileName);
   var audioBuffer   = buffer.buffer || null;
   self.sampleBuffer = null;
 

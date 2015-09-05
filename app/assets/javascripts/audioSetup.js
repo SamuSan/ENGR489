@@ -1,10 +1,11 @@
 $(function(){
-  var sampleFiles   = [ window.FileUtils.fileLocation("kick.wav"),
-                        window.FileUtils.fileLocation("snare.wav"),
-                        window.FileUtils.fileLocation("hat.wav")];
-  var convolutionFiles = [ window.FileUtils.fileLocation("verb_impulse.wav") ];
+  var fileNames = ['kick', 'snare', 'hat', 'verb_impulse'];
+  var sampleFiles   = [ window.FileUtils.fileLocation("kick"),
+                        window.FileUtils.fileLocation("snare"),
+                        window.FileUtils.fileLocation("hat")];
+  var convolutionFiles = [ window.FileUtils.fileLocation("verb_impulse") ];
 
-  console.log("Loading Audio Envirinomet")
+  console.log("Loading Audio Environment")
   window.AudioEnvironment = function(){};
   window.AudioEnvironment.context = new window.AudioContext();
   if(!window.AudioEnvironment.context){
@@ -22,16 +23,16 @@ $(function(){
 
   function setUpDrumMachineSamples() { 
     for (var i = sampleFiles.length - 1; i >= 0; i--) {
-      window.AudioEnvironment.sampleBuffers[stripFileName(sampleFiles[i])] = 
-      window.AudioEnvironment.loadSampleFile(sampleFiles[i]);
+      window.AudioEnvironment.sampleBuffers[fileNames[i]] = 
+      window.AudioEnvironment.loadSampleFile(sampleFiles[i], i);
     };
   }
 
   function loadConvolutionFiles(file){
-    window.AudioEnvironment.loadSampleFile(file);
+    window.AudioEnvironment.loadSampleFile(file, 3);
   }
 
-  window.AudioEnvironment.loadSampleFile = function(file) {
+  window.AudioEnvironment.loadSampleFile = function(file, idx) {
     var request = new XMLHttpRequest();
     request.open("GET", file, true);
     request.responseType = "arraybuffer";
@@ -40,7 +41,7 @@ $(function(){
       window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
           var sampleBuffer    = window.AudioEnvironment.context.createBufferSource();
           sampleBuffer.buffer = buffer;
-          window.AudioEnvironment.sampleBuffers[stripFileName(file)] = sampleBuffer;
+          window.AudioEnvironment.sampleBuffers[fileNames[idx]] = sampleBuffer;
           console.log(window.AudioEnvironment.sampleBuffers);
         });
       };
