@@ -1,12 +1,12 @@
-function LoopPlayer(name, filename) {
+function LoopPlayer(name, sampleName) {
   var self = this;
   Instrument.apply(self);
 
   var name = name;
   var loaded        = false;
   var playing       = false;
-  var file          = filename;
-  var audioBuffer   = window.AudioEnvironment.sampleBuffers[filename].buffer;
+  var file          = sampleName;
+  var audioBuffer   = window.AudioEnvironment.sampleBuffers[sampleName].buffer;
   self.sampleBuffer = null;
   // loadSampleFile(file);
 
@@ -61,7 +61,7 @@ function LoopPlayer(name, filename) {
 
   function loadSampleFile(file) {
     self.sampleBuffer = self.getContext().createBufferSource();
-    self.sampleBuffer.buffer = window.AudioEnvironment.sampleBuffers[filename].buffer;
+    self.sampleBuffer.buffer = window.AudioEnvironment.sampleBuffers[sampleName].buffer;
     // var request = new XMLHttpRequest();
     // request.open("GET", file, true);
     // request.responseType = "arraybuffer";

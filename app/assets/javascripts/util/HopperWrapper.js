@@ -46,11 +46,11 @@ function HopperWrapper() {
     //// LoopPlayer ////
     var loopPlayer = hopper.runtime.object();
 
-    loopPlayer.name_filename = hopper.runtime.method("name() filename()", [1, 1],
-      function (name, filename) {
+    loopPlayer.name_sample = hopper.runtime.method("name() sample()", [1, 1],
+      function (name, sample) {
         return name[0].asPrimitiveString().then(function (name) {
-          return filename[0].asPrimitiveString().then(function(filename) {
-            return new LoopPlayer(name, filename);
+          return sample[0].asPrimitiveString().then(function(sample) {
+            return new LoopPlayer(name, sample);
           })
         });
       });
