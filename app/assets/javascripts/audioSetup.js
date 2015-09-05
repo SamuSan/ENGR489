@@ -1,5 +1,17 @@
 $(function(){
-  var fileNames = ['kick', 'snare', 'hat', 'sample_1', 'sample_2', 'sample_3', 'sample_4', 'verb_impulse'];
+  var fileNames = ['kick',
+                   'snare',
+                   'hat',
+                   'sample_1',
+                   'sample_2',
+                   'sample_3',
+                   'sample_4',
+                   'sample_5',
+                   'sample_6',
+                   'sample_7',
+                   'sample_8',
+                   'verb_impulse'];
+
   var sampleFiles   = [ window.FileUtils.fileLocation("kick"),
                         window.FileUtils.fileLocation("snare"),
                         window.FileUtils.fileLocation("hat"),
@@ -7,6 +19,10 @@ $(function(){
                         window.FileUtils.fileLocation("sample_2"),
                         window.FileUtils.fileLocation("sample_3"),
                         window.FileUtils.fileLocation("sample_4"),
+                        window.FileUtils.fileLocation("sample_5"),
+                        window.FileUtils.fileLocation("sample_6"),
+                        window.FileUtils.fileLocation("sample_7"),
+                        window.FileUtils.fileLocation("sample_8"),
                         window.FileUtils.fileLocation("verb_impulse")];
 
   console.log("Loading Audio Environment")
@@ -25,9 +41,9 @@ $(function(){
 
   window.AudioEnvironment.sampleBuffers = {};
 
-  function setUpSampleBuffers() { 
+  function setUpSampleBuffers() {
     for (var i = sampleFiles.length - 1; i >= 0; i--) {
-      window.AudioEnvironment.sampleBuffers[fileNames[i]] = 
+      window.AudioEnvironment.sampleBuffers[fileNames[i]] =
       window.AudioEnvironment.loadSampleFile(sampleFiles[i], i);
     };
   }
