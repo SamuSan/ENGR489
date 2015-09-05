@@ -66,6 +66,9 @@ function Sequencer (instrument_parts) {
 
   self.stop = function() {
    sequencerWorker.postMessage('stop'); 
+   parts.forEach(function(p){
+    p.generator.stop();
+   });
   }
 
   self.run = function() {

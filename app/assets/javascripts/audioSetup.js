@@ -1,9 +1,14 @@
 $(function(){
-  var fileNames = ['kick', 'snare', 'hat', 'verb_impulse'];
+  var fileNames = ['kick', 'snare', 'hat', 'sample_1', 'sample_2', 'sample_3', 'sample_4', 'verb_impulse'];
   var sampleFiles   = [ window.FileUtils.fileLocation("kick"),
                         window.FileUtils.fileLocation("snare"),
-                        window.FileUtils.fileLocation("hat")];
-  var convolutionFiles = [ window.FileUtils.fileLocation("verb_impulse") ];
+                        window.FileUtils.fileLocation("hat"),
+                        window.FileUtils.fileLocation("sample_1"),
+                        window.FileUtils.fileLocation("sample_2"),
+                        window.FileUtils.fileLocation("sample_3"),
+                        window.FileUtils.fileLocation("sample_4"),
+                        window.FileUtils.fileLocation("verb_impulse")];
+  // var convolutionFiles = [ window.FileUtils.fileLocation("verb_impulse") ];
 
   console.log("Loading Audio Environment")
   window.AudioEnvironment = function(){};
@@ -21,16 +26,16 @@ $(function(){
 
   window.AudioEnvironment.sampleBuffers = {};
 
-  function setUpDrumMachineSamples() { 
+  function setUpSampleBuffers() { 
     for (var i = sampleFiles.length - 1; i >= 0; i--) {
       window.AudioEnvironment.sampleBuffers[fileNames[i]] = 
       window.AudioEnvironment.loadSampleFile(sampleFiles[i], i);
     };
   }
 
-  function loadConvolutionFiles(file){
-    window.AudioEnvironment.loadSampleFile(file, 3);
-  }
+  // function loadConvolutionFiles(file){
+  //   window.AudioEnvironment.loadSampleFile(file, 3);
+  // }
 
   window.AudioEnvironment.loadSampleFile = function(file, idx) {
     var request = new XMLHttpRequest();
@@ -48,9 +53,9 @@ $(function(){
     request.send();
   }
 
-  function stripFileName(file){
-    return filename = file.split('/')[2].split('.')[0];
-  }
- setUpDrumMachineSamples();
- loadConvolutionFiles(convolutionFiles[0]);
+  // function stripFileName(file){
+  //   return filename = file.split('/')[2].split('.')[0];
+  // }
+ setUpSampleBuffers();
+ // loadConvolutionFiles(convolutionFiles[0]);
 });

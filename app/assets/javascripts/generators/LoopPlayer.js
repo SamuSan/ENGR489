@@ -5,10 +5,10 @@ function LoopPlayer(name, filename) {
   var name = name;
   var loaded        = false;
   var playing       = false;
-  var file          = window.FileUtils.fileLocation(filename);
-  var audioBuffer   = null;
+  var file          = filename;
+  var audioBuffer   = window.AudioEnvironment.sampleBuffers[filename].buffer;
   self.sampleBuffer = null;
-  loadSampleFile(file);
+  // loadSampleFile(file);
 
   self.name = function() {
     return name;
@@ -30,15 +30,15 @@ function LoopPlayer(name, filename) {
   }
 
   self.play = function() {
-    if(loaded){
+    // if(loaded){
       if(playing){
         self.stop();
       }
       playing = !playing;
       assignBuffer();
       self.sampleBuffer.start();
-      console.log('playing');
-    }
+      // console.log('playing');
+    // }
   }
 
   self.stop = function() {
@@ -60,20 +60,22 @@ function LoopPlayer(name, filename) {
   }
 
   function loadSampleFile(file) {
-    var request = new XMLHttpRequest();
-    request.open("GET", file, true);
-    request.responseType = "arraybuffer";
+    self.sampleBuffer = self.getContext().createBufferSource();
+    self.sampleBuffer.buffer = window.AudioEnvironment.sampleBuffers[filename].buffer;
+    // var request = new XMLHttpRequest();
+    // request.open("GET", file, true);
+    // request.responseType = "arraybuffer";
 
-    request.onload = function() {
-      window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
-          audioBuffer = buffer;
-          self.sampleBuffer = self.getContext().createBufferSource();
-          self.sampleBuffer.buffer = audioBuffer;
-          loaded = true;
-          console.log('loaded');
-        });
-      };
-    request.send();
+    // request.onload = function() {
+    //   window.AudioEnvironment.context.decodeAudioData(request.response, function(buffer) {
+    //       audioBuffer = buffer;
+    //       self.sampleBuffer = self.getContext().createBufferSource();
+    //       self.sampleBuffer.buffer = audioBuffer;
+    //       loaded = true;
+    //       console.log('loaded');
+    //     });
+    //   };
+    // request.send();
   }
 
   function assignBuffer() { // TODO kill me
