@@ -30,7 +30,7 @@ $(function(){
 
   $('#done-button').on('click', function(e){
     e.preventDefault();
-    window.open("https://docs.google.com/forms/d/1R0JdWMTeZoEyHZ452fWJdJKl2QCAoeu0J6iqt4HE4DA/viewform", '_blank');
+    window.open("http://goo.gl/forms/pg63lYcKza", '_blank');
   });
 
   $('#noteoff-button').on('click', function(e){
