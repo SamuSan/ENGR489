@@ -8,7 +8,6 @@ $(function(){
                         window.FileUtils.fileLocation("sample_3"),
                         window.FileUtils.fileLocation("sample_4"),
                         window.FileUtils.fileLocation("verb_impulse")];
-  // var convolutionFiles = [ window.FileUtils.fileLocation("verb_impulse") ];
 
   console.log("Loading Audio Environment")
   window.AudioEnvironment = function(){};
@@ -33,10 +32,6 @@ $(function(){
     };
   }
 
-  // function loadConvolutionFiles(file){
-  //   window.AudioEnvironment.loadSampleFile(file, 3);
-  // }
-
   window.AudioEnvironment.loadSampleFile = function(file, idx) {
     var request = new XMLHttpRequest();
     request.open("GET", file, true);
@@ -53,9 +48,5 @@ $(function(){
     request.send();
   }
 
-  // function stripFileName(file){
-  //   return filename = file.split('/')[2].split('.')[0];
-  // }
  setUpSampleBuffers();
- // loadConvolutionFiles(convolutionFiles[0]);
 });

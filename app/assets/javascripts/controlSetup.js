@@ -26,5 +26,15 @@ $(function(){
     e.preventDefault();
     window.open("assets/gm_experimental_proceedure.pdf", '_blank');
     window.open("assets/gm_docs.pdf", '_blank');
-  })
+  });
+
+  $('#done-button').on('click', function(e){
+    e.preventDefault();
+    window.open("https://docs.google.com/forms/d/1R0JdWMTeZoEyHZ452fWJdJKl2QCAoeu0J6iqt4HE4DA/viewform", '_blank');
+  });
+
+  $('#noteoff-button').on('click', function(e){
+    e.preventDefault();
+    $("#error-div").text(window.AudioEnvironment.MidiController.toggleNoteOffThres());
+  });
 });
