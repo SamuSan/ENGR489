@@ -1,6 +1,7 @@
 function MidiController(midiConnection) {
   var self = this;
   var connection =  midiConnection;
+  startLoggingMIDIInput(connection, null);
   var instrumentConnected = false;
   var instrument;
   var noteOffThresh = 65;
@@ -19,6 +20,10 @@ function MidiController(midiConnection) {
           instrument.noteOff(event.data[1]);
       }
     }
+  }
+
+  function startLoggingMIDIInput( connection, indexOfPort ) {
+    connection.inputs.forEach( function(entry) {entry.onmidimessage = onMIDIMessage;});
   }
 
   self.toggleNoteOffThres = function(){

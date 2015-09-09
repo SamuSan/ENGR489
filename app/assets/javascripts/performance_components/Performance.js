@@ -11,7 +11,9 @@ function Performance(instrument, sequencer) {
   }
 
   self.stop  = function(){
-    seq.stop();
+    if(seq instanceof Sequencer){
+      seq.stop();
+    }
     window.AudioEnvironment.Performance = null;
   }
 }
