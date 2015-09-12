@@ -28,13 +28,13 @@ $(function(){
 
   $('#done-button').on('click', function(e){
     e.preventDefault();
-    window.open("http://goo.gl/forms/pg63lYcKza", '_blank');
+    window.open("http://goo.gl/forms/sDvXoR8nbY", '_blank');
   });
 
   $('#noteoff-button').on('click', function(e){
     e.preventDefault();
     $("#error-div").addClass('info-text');
     $("#error-div").text(window.AudioEnvironment.MidiController.toggleNoteOffThres());
-    
+
   });
 });
