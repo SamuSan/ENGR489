@@ -33,6 +33,8 @@ $(function(){
 
   $('#noteoff-button').on('click', function(e){
     e.preventDefault();
+    $("#error-div").addClass('info-text');
     $("#error-div").text(window.AudioEnvironment.MidiController.toggleNoteOffThres());
+    
   });
 });

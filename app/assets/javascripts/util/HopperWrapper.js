@@ -105,6 +105,7 @@ function HopperWrapper() {
     interpreter = new hopper.Interpreter();
     interpreter.enter(function(){
       interpreter.interpret(textInput, function(error){
+        $("#error-div").removeClass('info-text');
         $("#error-div").text(error.toString());
         console.log(error.toString());
       });
