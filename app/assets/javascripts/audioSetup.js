@@ -58,7 +58,7 @@ $(function(){
           var sampleBuffer    = window.AudioEnvironment.context.createBufferSource();
           sampleBuffer.buffer = buffer;
           window.AudioEnvironment.sampleBuffers[fileNames[idx]] = sampleBuffer;
-          console.log(window.AudioEnvironment.sampleBuffers);
+          // console.log(window.AudioEnvironment.sampleBuffers);
         });
       };
     request.send();
