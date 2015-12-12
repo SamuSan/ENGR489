@@ -26,16 +26,15 @@ function Sequencer (instrument_parts) {
   }
 
   function scheduleEvent( stepNumber, time ) {
-   db(stepNumber % 4);
+   // db(stepNumber % 4);
     self.parts.forEach(function(part) {
       var startTime = nextEventTime;
       if(!eventsQueued[part.generator.name() + "" + startTime.toFixed(5)]){
-        db("SCHEDULING Next Event Time:  " + nextEventTime.toFixed(5) );
+        // db("Scheduling:  " + nextEventTime.toFixed(5) );
         var endTime = nextEventTime + (oneBeatTimeValue / currentSubdivision);
         eventsQueued.push(part.generator.name() + "" + startTime.toFixed(5) );
-        db("Index of the shits" +  part.rhythm.length );
         if (part.rhythm[stepNumber] == 1) {
-          db(part.generator.name() + "" + startTime.toFixed(5)+ "ends at " + endTime.toFixed(5))
+          db("Scheduling:  " + part.generator.name() + "" + startTime.toFixed(5))
           part.generator.play(startTime, endTime);
         };
       }
@@ -72,7 +71,7 @@ function Sequencer (instrument_parts) {
   }
 
   self.run = function() {
-    db("Running");
+    db("Running sequencer");
     performanceRunning = !performanceRunning;
     performanceRunning ? startPerformance(parts) : stopPerformance();
   }
@@ -98,6 +97,6 @@ function Sequencer (instrument_parts) {
   }
 
   function db(message) {
-    <!-- console.log(message); -->
+    console.log(message);
   }
 }
