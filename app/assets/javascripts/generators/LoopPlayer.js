@@ -1,8 +1,7 @@
-function LoopPlayer(name, sampleName) {
+function LoopPlayer(sampleName) {
   var self = this;
   Instrument.apply(self);
 
-  var name = name;
   var loaded        = false;
   var playing       = false;
   var file          = sampleName;

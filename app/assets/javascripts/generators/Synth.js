@@ -1,8 +1,8 @@
 'use strict';
 
-var Synth = function(name, wave, chord) {
+var Synth = function(wave, chord) {
   var self = this;
-  Instrument.apply(self, [name]);
+  Instrument.apply(self);
 
   var oscWaveform     = wave;
   var voices          = [];

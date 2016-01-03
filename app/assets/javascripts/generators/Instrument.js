@@ -3,7 +3,7 @@
 function Instrument () {
   var self = this;
   var audioContext = window.AudioEnvironment.context;
-  var name = arguments[0];
+  var name = window.RandomNameGenerator.randomName();
 
   self.getContext = function(){
     return audioContext;

@@ -1,6 +1,6 @@
-function DrumMachine(name) {
+function DrumMachine() {
   var self = this;
-  Instrument.apply(self, [name]);
+  Instrument.apply(self);
 
   var drums = {};
   init();

@@ -6,15 +6,14 @@ function HopperWrapper() {
     //// Synth ////
     var synth = hopper.runtime.object();
 
-    synth.name_wave_chord = hopper.runtime.method("name() wave() chord()", [1, 1, 1],
-      function (name, wave, chord) {
-        return name[0].asPrimitiveString().then(function(name){
+    synth.wave_chord = hopper.runtime.method("wave() chord()", [1, 1],
+      function (wave, chord) {
+        console.log(wave);
           return wave[0].asPrimitiveString().then(function (wave) {
             return chord[0].asPrimitiveString().then(function (chord) {
-              return new Synth(name, wave, chord);
+              return new Synth(wave, chord);
             });
           });
-        });
       });
 
     prelude.Synth = hopper.runtime.method("Synth", 0, function () {
@@ -23,13 +22,6 @@ function HopperWrapper() {
 
     //// DrumMachine ////
     var drumMachine = hopper.runtime.object();
-
-    // drumMachine.name = hopper.runtime.method("name()", 1,
-    //   function (name) {
-    //     return name.asPrimitiveString().then(function (name) {
-    //       return new DrumMachine(name);
-    //     });
-    //   });
 
     drumMachine.name = hopper.runtime.method("name()", 1,
       function (name) {
@@ -42,18 +34,16 @@ function HopperWrapper() {
       return drumMachine;
     });
 
-
     //// LoopPlayer ////
     var loopPlayer = hopper.runtime.object();
 
-    loopPlayer.name_sample = hopper.runtime.method("name() sample()", [1, 1],
-      function (name, sample) {
-        return name[0].asPrimitiveString().then(function (name) {
-          return sample[0].asPrimitiveString().then(function(sample) {
-            return new LoopPlayer(name, sample);
+    loopPlayer.sample = hopper.runtime.method("sample()", 1,
+      function (sample) {
+        console.log(sample);
+          return sample.asPrimitiveString().then(function(sample) {
+            return new LoopPlayer(sample);
           })
         });
-      });
 
     prelude.LoopPlayer = hopper.runtime.method("LoopPlayer", 0, function(){
       return loopPlayer;
