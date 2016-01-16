@@ -16,7 +16,6 @@ var Synth = function(wave, chord) {
   chord ? notes = HarmonyUtil.chordFromName(chord) : notes = null;
   var oscPanValue     = 0;
   var voicePanValue   = 0;
-  // var voiceBuss     = self.getContext().createChannelMerger(notes.length);
 
   //**** Live play functions ****//
   self.noteOn = function(noteNumber){
