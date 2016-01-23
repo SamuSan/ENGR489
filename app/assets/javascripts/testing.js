@@ -5,7 +5,7 @@ function Test() {
   var performance = null;
 
   self.startTest = function() {
-    var s = new Synth('saw', );
+    // var s = new Synth('saw', );
   }
 
   self.stopTest = function() {

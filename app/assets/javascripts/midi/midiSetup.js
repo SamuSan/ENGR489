@@ -10,6 +10,5 @@ $(function () {
   function onMidiFailure(message){
     console.log(message);
   }
-
   navigator.requestMIDIAccess().then(onMidiSucess, onMidiFailure);
 });

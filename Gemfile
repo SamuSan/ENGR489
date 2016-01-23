@@ -41,6 +41,12 @@ gem 'devise'
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'
 
+  gem 'selenium-webdriver', '~> 2.48', '>= 2.48.1'
+
+  gem 'chromedriver-helper', '~> 1.0'
+
+  gem 'teaspoon-jasmine'
+
   gem 'guard'
 end
 

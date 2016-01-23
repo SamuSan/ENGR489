@@ -1,5 +1,6 @@
 function Sequencer (instrument_parts) {
   var self = this;
+  var running = false;
   var parts = new Arranger(instrument_parts).arrange();
   var startedrunning = 0; // TODO for testing remove me
   var tempo = 120.0;
@@ -68,12 +69,18 @@ function Sequencer (instrument_parts) {
    parts.forEach(function(p){
     p.generator.stop();
    });
+   running = false;
   }
 
   self.run = function() {
     db("Running sequencer");
+    running = true;
     performanceRunning = !performanceRunning;
     performanceRunning ? startPerformance(parts) : stopPerformance();
+  }
+
+  self.running = function() {
+    return running;
   }
 
   self.updateTempo = function(newTempo) {
