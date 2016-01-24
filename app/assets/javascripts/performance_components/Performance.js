@@ -39,7 +39,7 @@ function Performance(instrument, sequencer) {
     return true;
   }
   //Change to [index] sequence
-  self.change = function(index) {
+  self.change = function(index, legato) {
     if(index < 0 || index >= sequences.length || index === undefined){ return false; }
     //Stop current playing seq
     playing_sequence.stop();
