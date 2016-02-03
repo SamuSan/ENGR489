@@ -3,23 +3,23 @@ function Performance(instrument, sequencer) {
 
   window.AudioEnvironment.Performance = self;
   var sequences = [];
-  var playing_sequence;
-  sequencer instanceof Sequencer ? playing_sequence = sequencer : playing_sequence = sequencer[0];
+  var playingSequence;
+  sequencer instanceof Sequencer ? playingSequence = sequencer : playingSequence = sequencer[0];
 
   if (instrument instanceof Synth) {
     var midi = window.AudioEnvironment.MidiController;
     midi.connectInstrument(instrument[0]);
   };
 
-  if (playing_sequence instanceof Sequencer){
-    sequences.push(playing_sequence);
-    playing_sequence.init();
-    playing_sequence.run();
+  if (playingSequence instanceof Sequencer){
+    sequences.push(playingSequence);
+    playingSequence.init();
+    playingSequence.run();
   }
 
   function runSequence() {
-    playing_sequence.init();
-    playing_sequence.run();
+    playingSequence.init();
+    playingSequence.run();
   }
   //Add a sequencer to the collection of sequences for this performance
   //returns the index of the new sequencer
@@ -31,10 +31,12 @@ function Performance(instrument, sequencer) {
   self.nextSequence = function() {
     //No next sequence do nothing, return false
     if(sequences.length === 1){ return false; }
+
+    new NextSequenceService().call(playingSequence);
     //Stop current playing seq
-    playing_sequence.stop();
+    playingSequence.stop();
     //Start next sequence
-    playing_sequence = sequences[sequences.indexOf(playing_sequence) + 1];
+    playingSequence = sequences[sequences.indexOf(playingSequence) + 1];
     runSequence();
     return true;
   }
@@ -42,16 +44,16 @@ function Performance(instrument, sequencer) {
   self.change = function(index, legato) {
     if(index < 0 || index >= sequences.length || index === undefined){ return false; }
     //Stop current playing seq
-    playing_sequence.stop();
+    playingSequence.stop();
     //Start next sequence
-    playing_sequence = sequences[index];
+    playingSequence = sequences[index];
     runSequence();
     return true;
   }
   //Stop this performance and remove itself from the window context.
   self.stop  = function() {
-    if(playing_sequence instanceof Sequencer){
-      playing_sequence.stop();
+    if(playingSequence instanceof Sequencer){
+      playingSequence.stop();
     }
     window.AudioEnvironment.Performance = null;
   }
