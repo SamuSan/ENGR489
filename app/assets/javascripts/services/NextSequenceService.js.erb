@@ -2,20 +2,20 @@ function NextSequenceService (currentSequence, nextSequence) {
   var self = this;
   var currentSequence = currentSequence;
   var nextSequence = nextSequence;
+  var callBackFrequency = 0.02;
 
   self.call = function() {
     nextSequenceWorker = new Worker("<%= javascript_path "nextSequenceWorker.js" %>");
 
-    sequencerWorker.onmessage = function(e) {
+    nextSequenceWorker.onmessage = function(e) {
       if(e.data == 'step') {
-        // db(e.data);
-        eventScheduler();
+          console.log('Received step :' + e.data);
       }
       else {
-        db('Received :' + e.data);
+        console.log('Received :' + e.data);
       }
     };
-    sequencerWorker.postMessage({ "schedulingLookAhead": schedulingLookAhead });
+    nextSequenceWorker.postMessage({ "callBackFrequency": callBackFrequency });
+    nextSequenceWorker.postMessage("run");
   }
 }
-
