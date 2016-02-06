@@ -34,11 +34,11 @@ function Performance(instrument, sequencer) {
 
     var nextSequenceService = new NextSequenceService(playingSequence, sequences[sequences.indexOf(playingSequence) + 1]);
     nextSequenceService.call();
-    //Stop current playing seq
-    playingSequence.stop();
-    //Start next sequence
-    playingSequence = sequences[sequences.indexOf(playingSequence) + 1];
-    runSequence();
+    // //Stop current playing seq
+    // playingSequence.stop();
+    // //Start next sequence
+    // playingSequence = sequences[sequences.indexOf(playingSequence) + 1];
+    // runSequence();
     return true;
   }
   //Change to [index] sequence

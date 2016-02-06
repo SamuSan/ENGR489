@@ -10,9 +10,10 @@ describe("Performance", function() {
 
   beforeEach(function() {
     syn  = new Synth('sine', "C-MAJ7");
-    synPart = new Part(syn, "ONE_BAR_LOOP");
+    synPart = new Part(syn, "QU");
+    synPartTwo = new Part(syn, "SQ");
     seq = new Sequencer([synPart]);
-    seq_two = new Sequencer([synPart]);
+    seq_two = new Sequencer([synPartTwo]);
     p = new Performance(null, seq);
   });
 

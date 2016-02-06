@@ -16,25 +16,25 @@ function Sequencer (instrument_parts) {
   var sequencerWorker = null;
   var context = window.AudioEnvironment.context;
 
-  function advanceStep() {
-    oneBeatTimeValue = (oneMinute / tempo);
+  function advanceStep () {
+    oneBeatTimeValue = (oneMinute / tempo); // TODO refactor this out to a function that gets called on instantiation and when tempo is modified
     nextEventTime += (oneBeatTimeValue / currentSubdivision);
-
     currentStepNumber ++;
+
     if(currentStepNumber == 64) {
       currentStepNumber = 0;
     }
   }
 
-  function scheduleEvent( stepNumber, time ) {
-   // db(stepNumber % 4);
+  function scheduleEvent (currentStepNumber, time ) {
     self.parts.forEach(function(part) {
       var startTime = nextEventTime;
-      if(!eventsQueued[part.generator.name() + "" + startTime.toFixed(5)]){
-        // db("Scheduling:  " + nextEventTime.toFixed(5) );
+
+      if(eventNotAlreadyScheduled(part, startTime)){
         var endTime = nextEventTime + (oneBeatTimeValue / currentSubdivision);
         eventsQueued.push(part.generator.name() + "" + startTime.toFixed(5) );
-        if (part.rhythm[stepNumber] == 1) {
+
+        if (part.rhythm[currentStepNumber] == 1) {
           db("Scheduling:  " + part.generator.name() + "" + startTime.toFixed(5))
           part.generator.play(startTime, endTime);
         };
@@ -42,7 +42,11 @@ function Sequencer (instrument_parts) {
     });
   }
 
-  function eventScheduler() {
+  function eventNotAlreadyScheduled (part, startTime) {
+    return !eventsQueued[part.generator.name() + "" + startTime.toFixed(5)];
+  }
+
+  function eventScheduler () {
     while (nextEventTime < context.currentTime + scheduleEventHorizon ) {
       scheduleEvent( currentStepNumber, nextEventTime );
       advanceStep();
@@ -50,22 +54,22 @@ function Sequencer (instrument_parts) {
     }
   }
 
-  function startPerformance(parts) {
+  function startPerformance (parts) {
     startedrunning = context.currentTime;
-    self.parts = parts; 
+    self.parts = parts;
     currentStepNumber = 0;
 
     nextEventTime = context.currentTime;
     sequencerWorker.postMessage('running');
   }
 
-  function stopPerformance() {
+  function stopPerformance () {
     db("stopping");
     sequencerWorker.postMessage('stop');
   }
 
   self.stop = function() {
-   sequencerWorker.postMessage('stop'); 
+   sequencerWorker.postMessage('stop');
    parts.forEach(function(p){
     p.generator.stop();
    });
@@ -101,6 +105,10 @@ function Sequencer (instrument_parts) {
       }
     };
     sequencerWorker.postMessage({ "schedulingLookAhead": schedulingLookAhead });
+  }
+
+  self.currentClockPosition = function() {
+    return self.context.currentTime;
   }
 
   function db(message) {
