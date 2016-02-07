@@ -9,6 +9,8 @@ function Sequencer (instrument_parts) {
   var nextEventTime = 0.0;
   var currentSubdivision = 4;  // TODO 16ths eg 4 subs per beat this is restrictive, time based is gross, options?
   var currentStepNumber = 0;
+  var maxSteps = 64;
+  var nextLoopPoint = null;
   var performanceRunning = false;
   var oneBeatTimeValue = (oneMinute / tempo);
   var schedulingLookAhead = 50.0;
@@ -17,11 +19,11 @@ function Sequencer (instrument_parts) {
   var context = window.AudioEnvironment.context;
 
   function advanceStep () {
-    oneBeatTimeValue = (oneMinute / tempo); // TODO refactor this out to a function that gets called on instantiation and when tempo is modified
+    // oneBeatTimeValue = (oneMinute / tempo); // TODO refactor this out to a function that gets called on instantiation and when tempo is modified
     nextEventTime += (oneBeatTimeValue / currentSubdivision);
     currentStepNumber ++;
 
-    if(currentStepNumber == 64) {
+    if(currentStepNumber == maxSteps) {
       currentStepNumber = 0;
     }
   }
@@ -47,10 +49,11 @@ function Sequencer (instrument_parts) {
   }
 
   function eventScheduler () {
+    nextLoopPoint = nextLoopPoint();
+
     while (nextEventTime < context.currentTime + scheduleEventHorizon ) {
       scheduleEvent( currentStepNumber, nextEventTime );
       advanceStep();
-      var runningTime = context.currentTime - startedrunning;
     }
   }
 
@@ -68,8 +71,17 @@ function Sequencer (instrument_parts) {
     sequencerWorker.postMessage('stop');
   }
 
+  function nextLoopPoint () {
+    return 0;
+  }
+
+  function updateOneBeatValue () {
+    oneBeatTimeValue = (oneMinute / tempo);
+  }
+
   self.stop = function() {
    sequencerWorker.postMessage('stop');
+
    parts.forEach(function(p){
     p.generator.stop();
    });
@@ -81,6 +93,8 @@ function Sequencer (instrument_parts) {
     running = true;
     performanceRunning = !performanceRunning;
     performanceRunning ? startPerformance(parts) : stopPerformance();
+    updateOneBeatValue();
+    //TODO should we be calling enventShecduler now prempting the worker?
   }
 
   self.running = function() {
@@ -89,6 +103,7 @@ function Sequencer (instrument_parts) {
 
   self.updateTempo = function(newTempo) {
     tempo = newTempo;
+    updateOneBeatValue();
   }
 
   self.init = function() {
@@ -97,7 +112,6 @@ function Sequencer (instrument_parts) {
 
     sequencerWorker.onmessage = function(e) {
       if(e.data == 'step') {
-        // db(e.data);
         eventScheduler();
       }
       else {
