@@ -9,7 +9,7 @@ function NextSequenceService (currentSequence, nextSequence) {
 
     nextSequenceWorker.onmessage = function(e) {
       if(e.data == 'check') {
-          nextSequenceWorker.postMessage('currentClockValue' : currentSequence.currentClockPosition());
+          // nextSequenceWorker.postMessage('currentClockValue' : currentSequence.currentClockPosition());
           console.log('Received check :' + e.data);
       }
       else if(e.data == 'change'){
@@ -20,6 +20,6 @@ function NextSequenceService (currentSequence, nextSequence) {
       }
     };
     nextSequenceWorker.postMessage({ "callBackFrequency": callBackFrequency });
-    nextSequenceWorker.postMessage({"run" : true, "targetClockValue" : currentSequence.});
+    nextSequenceWorker.postMessage({ "run" : true, "targetClockValue" : currentSequence.nextLoopPoint() });
   }
 }
