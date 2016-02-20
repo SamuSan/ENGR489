@@ -1,6 +1,3 @@
-Teaspoon.defer = true;
-setTimeout(Teaspoon.execute, 2000);
-
 describe("Performance", function() {
   var syn;
   var synPart;
@@ -21,8 +18,8 @@ describe("Performance", function() {
     expect(seq.running()).toEqual(true);
   });
 
-  describe('next_seq', function() {
-    it("returns false from next_seq if there is no next sequence to play", function() {
+  describe('nextSequence', function() {
+    it("returns false from nextSequence if there is no next sequence to play", function() {
       expect(p.nextSequence()).toEqual(false);
     });
 
@@ -31,18 +28,22 @@ describe("Performance", function() {
       expect(seq.running()).toEqual(true);
     });
 
-    it("returns true from next_seq if there is a next sequence to play", function() {
+    it("returns true from nextSequence if there is a next sequence to play", function() {
       p.enqueue(seq_two);
       expect(p.nextSequence()).toEqual(true);
     });
 
-    it("stops the currently playing sequence and plays the next when the next_seq message is sent", function() {
+    it("returns false from nextSequence if there is no next sequence to play", function() {
+      expect(p.nextSequence()).toEqual(false);
+    });
+
+    it("stops the currently playing sequence and plays the next when the nextSequence message is sent", function() {
       p.enqueue(seq_two);
       p.nextSequence();
       expect(seq.running()).toEqual(false);
     });
 
-    it("inits and starts the next sequence when the next_seq message is sent", function() {
+    it("inits and starts the next sequence when the nextSequence message is sent", function() {
       p.enqueue(seq_two);
       p.nextSequence();
       expect(seq_two.running()).toEqual(true);

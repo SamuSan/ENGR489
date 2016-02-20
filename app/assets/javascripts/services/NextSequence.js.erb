@@ -1,0 +1,31 @@
+function NextSequence (currentSequence, nextSequence) {
+  var self = this;
+  var currentSequence = currentSequence;
+  var nextSequence = nextSequence;
+  nextSequence.init(); //Do this here to save any setup time related timing issues later
+  var callBackFrequency = (1.0 / 44100.0) * 0.5;
+
+  self.call = function() {
+    nextSequenceWorker = new Worker("<%= javascript_path "nextSequenceWorker.js" %>");
+
+    nextSequenceWorker.onmessage = function(e) {
+      if(e.data == 'check') {
+          nextSequenceWorker.postMessage({"currentClockValue" : currentSequence.currentClockPosition(), "targetClockValue" : currentSequence.nextLoopPoint()});
+          log_shit('Received check :' + e.data);
+          log_shit('Current Time: ' + currentSequence.currentClockPosition() + 'NextLoopPoint: ' + currentSequence.nextLoopPoint());
+      }
+      else if(e.data == 'change'){
+        nextSequence.run();
+        currentSequence.stop();
+      }
+      else {
+        log_shit('Received :' + e.data);
+      }
+    };
+    nextSequenceWorker.postMessage({ "callBackFrequency": callBackFrequency, "run" : true, "targetClockValue" : currentSequence.nextLoopPoint()});
+  }
+
+  function log_shit(argument) {
+    // console.log(argument);
+  }
+}

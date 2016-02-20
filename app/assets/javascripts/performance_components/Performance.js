@@ -32,7 +32,7 @@ function Performance(instrument, sequencer) {
     //No next sequence do nothing, return false
     if(sequences.length === 1){ return false; }
 
-    var nextSequenceService = new NextSequenceService(playingSequence, sequences[sequences.indexOf(playingSequence) + 1]);
+    var nextSequenceService = new NextSequence(playingSequence, sequences[sequences.indexOf(playingSequence) + 1]);
     nextSequenceService.call();
     // //Stop current playing seq
     // playingSequence.stop();

@@ -17,8 +17,8 @@
 // If you're using CommonJS, RequireJS or some other asynchronous library you can defer execution. Call
 // Teaspoon.execute() after everything has been loaded. Simple example of a timeout:
 //
-// Teaspoon.defer = true
-// setTimeout(Teaspoon.execute, 1000)
+Teaspoon.defer = true
+setTimeout(Teaspoon.execute, 2000)
 //
 // Matching files
 // By default Teaspoon will look for files that match _spec.{js,js.coffee,.coffee}. Add a filename_spec.js file in your

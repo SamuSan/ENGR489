@@ -7,6 +7,7 @@ function Sequencer (instrument_parts) {
   var oneMinute = 60.0;
   var eventsQueued = [];
   var nextEventTime = 0.0;
+  var nextLoopPoint = null;
   var currentSubdivision = 4;  // TODO 16ths eg 4 subs per beat this is restrictive, time based is gross, options?
   var currentStepNumber = 0;
   var maxSteps = 64;
@@ -28,7 +29,6 @@ function Sequencer (instrument_parts) {
   }
 
   function scheduleEvent (currentStepNumber, time ) {
-    console.log(nextLoopPoint());
     self.parts.forEach(function(part) {
       var startTime = nextEventTime;
 
@@ -49,7 +49,6 @@ function Sequencer (instrument_parts) {
   }
 
   function eventScheduler () {
-    nextLoopPoint = nextLoopPoint();
 
     while (nextEventTime < context.currentTime + scheduleEventHorizon ) {
       scheduleEvent( currentStepNumber, nextEventTime );
@@ -76,8 +75,13 @@ function Sequencer (instrument_parts) {
     oneBeatTimeValue = (oneMinute / tempo);
   }
 
+  function calculateNextLoopPoint () {
+    return context.currentTime + ((oneBeatTimeValue / currentSubdivision) * maxSteps);
+  }
+
   self.nextLoopPoint = function () {
-    return (maxSteps - (currentStepNumber + 1)) * oneBeatTimeValue;
+    nextLoopPoint === calculateNextLoopPoint() ? nextLoopPoint = calculateNextLoopPoint() : 0;
+    return nextLoopPoint;
   }
 
   self.stop = function() {
@@ -109,6 +113,11 @@ function Sequencer (instrument_parts) {
 
   self.init = function() {
     db("Initialising sequencer");
+
+    if(nextLoopPoint === null){
+      nextLoopPoint = calculateNextLoopPoint();
+    }
+
     sequencerWorker = new Worker("<%= javascript_path "sequencerWorker.js" %>");
 
     sequencerWorker.onmessage = function(e) {
@@ -123,7 +132,7 @@ function Sequencer (instrument_parts) {
   }
 
   self.currentClockPosition = function() {
-    return self.context.currentTime;
+    return context.currentTime;
   }
 
   function db(message) {

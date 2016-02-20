@@ -1,4 +1,9 @@
 $(function(){
+  var test = new Test();
+  test.startTest();
+  letItRun = setTimeout(function(){
+    test.stopTest();
+  }, 10000);
   // var inputs  = [
   //   "def s = Synth.name(\"s\") wave(\"triangle\") chord(\"C-MAJ7\")\n",
   //   "s.setEnvelopeRelease(2.0)\n" + 
